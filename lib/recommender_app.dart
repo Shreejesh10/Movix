@@ -36,16 +36,15 @@ class RecommenderApp extends StatelessWidget {
             ),
             iconTheme: const IconThemeData(color: Colors.white),
             appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.black,
+              backgroundColor: Color.fromRGBO(35, 35, 35, 1.0),
               titleTextStyle: TextStyle(fontSize: 20, color: Colors.white),
             ),
             bottomSheetTheme: const BottomSheetThemeData(
-              backgroundColor: Colors.black,
+              backgroundColor: Colors.transparent,
               elevation: 3,
             ),
             inputDecorationTheme: const InputDecorationTheme(
-              filled: true,
-              fillColor: Color(0xFF1E1E1E),
+
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,
                 borderRadius: BorderRadius.all(Radius.circular(12)),

@@ -67,7 +67,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         FocusScope.of(context).unfocus();
                         if (_formKey.currentState!.validate()) {
                           final email = _emailController.text.trim();
+                          Navigator.pushNamed(context, RouteName.homeScreen);
                         }
+
                       },
                       child: Text(
                         'Sign In',
@@ -239,6 +241,10 @@ class _LoginScreenState extends State<LoginScreen> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter $hintText';
+              }
+              if (hintText == 'Email Address' &&
+                  !RegExp(r'^[a-zA-Z0-9._%+-]+@gmail\.com$').hasMatch(value.trim())) {
+                return 'Enter a valid Email address';
               }
               return null;
             },
