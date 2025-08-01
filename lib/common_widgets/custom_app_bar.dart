@@ -16,12 +16,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       elevation: 0,
-      leading: IconButton(
-        onPressed: onMenuTap ?? () {},
-        icon: Icon(Icons.menu, color: Colors.grey, size: 40.sp),
-      ),
-      centerTitle: true,
       title: Text(
         title,
         style: TextStyle(

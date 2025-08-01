@@ -116,8 +116,8 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                       "Select the genres you\nlike to watch",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 18.sp,
+                        color: Colors.black,
+                        fontSize: 20.sp,
                       ),
                     ),
                   ),
