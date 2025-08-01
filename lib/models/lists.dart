@@ -22,24 +22,31 @@ class _UserListScreenState extends State<UserListScreen> {
       Icon(
         Icons.home,
         size: 30,
-        color: index == 0 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 0
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.list,
         size: 30,
-        color: index == 1 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 1
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.graphic_eq_outlined,
         size: 30,
-        color: index == 2 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 2
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.person,
         size: 30,
-        color: index == 3 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 3
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
-
     ];
 
     return Scaffold(
@@ -47,17 +54,18 @@ class _UserListScreenState extends State<UserListScreen> {
       appBar: const CustomAppBar(title: 'List'),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+          padding: EdgeInsets.only(
+            left: 15.w,
+            right: 15.w,
+            top: 10.h,
+            bottom: 55.h,
+          ),
           child: Column(
             children: [
               const SearchFilterBar(),
               SizedBox(height: 15.h),
               GenreSelector(
-                genres: [
-                  "Watching",
-                  'Completed',
-                  'Plan to Watch',
-                ],
+                genres: ["Watching", 'Completed', 'Plan to Watch'],
                 onGenreSelected: (genre) {},
               ),
               SizedBox(height: 18.h),
@@ -69,6 +77,16 @@ class _UserListScreenState extends State<UserListScreen> {
                 '8.8',
                 0.1,
                 0,
+                1,
+              ),
+              _movielist(
+                'assets/images/Movie Poster/Forestgump.jpg',
+                'Tom Hanks and the Forest Gump',
+                'Adventure/Journey',
+                '2005',
+                '8.8',
+                1,
+                1,
                 1,
               ),
               _movielist(
@@ -144,15 +162,15 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 
   Widget _movielist(
-      String imagePath,
-      String title,
-      String genre,
-      String releaseDate,
-      String imdb,
-      double progress,
-      int currentEp,
-      int totalEp,
-      ) {
+    String imagePath,
+    String title,
+    String genre,
+    String releaseDate,
+    String imdb,
+    double progress,
+    int currentEp,
+    int totalEp,
+  ) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.w),
       height: 135.h,
@@ -198,23 +216,21 @@ class _UserListScreenState extends State<UserListScreen> {
                     SizedBox(height: 4.h),
                     Text(
                       genre,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                     ),
                     SizedBox(height: 2.h),
                     Text(
                       releaseDate,
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(fontSize: 12.sp, color: Colors.grey),
                     ),
                     SizedBox(height: 4.h),
                     Row(
                       children: [
-                        Icon(Icons.star, color: Colors.yellow[700], size: 15.sp),
+                        Icon(
+                          Icons.star,
+                          color: Colors.yellow[700],
+                          size: 15.sp,
+                        ),
                         SizedBox(width: 4.w),
                         Text(
                           imdb,
@@ -244,7 +260,9 @@ class _UserListScreenState extends State<UserListScreen> {
                               ),
                               LayoutBuilder(
                                 builder: (context, constraints) {
-                                  final width = constraints.maxWidth * progress.clamp(0.0, 1.0);
+                                  final width =
+                                      constraints.maxWidth *
+                                      progress.clamp(0.0, 1.0);
                                   return Container(
                                     width: width,
                                     height: 8.h,
@@ -274,11 +292,14 @@ class _UserListScreenState extends State<UserListScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 15.h, right: 12.w),
-              child: Icon(
-                Icons.edit_outlined,
-                size: 20.sp,
-                color: Colors.white38,
+              padding: EdgeInsets.only(top: 6.h, right: 12.w),
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.edit_outlined,
+                  size: 20.h,
+                  color: Colors.white38,
+                ),
               ),
             ),
           ],

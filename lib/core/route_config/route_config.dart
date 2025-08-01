@@ -8,6 +8,7 @@ import 'package:recommender/features/dashboard/user_profile.dart';
 import 'package:recommender/models/lists.dart';
 import 'package:recommender/models/onboarding_screen.dart';
 import 'package:recommender/models/splash_screen.dart';
+import 'package:recommender/models/viewall.dart';
 
 class RouteConfig {
   RouteConfig._();
@@ -48,6 +49,10 @@ class RouteConfig {
       case RouteName.onboardingScreen:
         return MaterialPageRoute(
             builder: (_) => const GenreSelectionScreen()
+        );
+      case RouteName.viewallScreen:
+        return MaterialPageRoute(
+            builder: (_) => const ViewallScreen()
         );
 
 

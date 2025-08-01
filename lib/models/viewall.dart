@@ -1,0 +1,181 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class ViewallScreen extends StatefulWidget {
+  const ViewallScreen({super.key});
+
+  @override
+  State<ViewallScreen> createState() => _ViewallScreenState();
+}
+
+class _ViewallScreenState extends State<ViewallScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Recommended For You',
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            color: const Color.fromRGBO(173, 173, 173, 1.0),
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 10.h, bottom: 55.h),
+          child: Column(
+            children: [
+              SizedBox(height: 18.h),
+              _movielist(
+                'assets/images/Movie Poster/Pulp Fiction.png',
+                'Pulp Fiction',
+                'Adventure',
+                '1994',
+                '8.8',
+              ),
+              _movielist(
+                'assets/images/Movie Poster/F1.jpg',
+                'F1',
+                'Racing',
+                '2005',
+                '8.8'
+              ),
+              _movielist(
+                  'assets/images/Movie Poster/Forestgump.jpg',
+                  'Tom Hanks and the Forest Gump',
+                  'Adventure/Journey',
+                  '2005',
+                  '8.8'
+              ),
+              _movielist(
+                'assets/images/Movie Poster/SpiderMan.png',
+                'Spider Man into the vice-verse',
+                'Animated',
+                '2022',
+                '8.8'
+              ),
+              _movielist(
+                'assets/images/Movie Poster/pandorum.jpg',
+                'Pandorum',
+                'Horror',
+                '1994',
+                '8.8'
+              ),
+              _movielist(
+                'assets/images/Movie Poster/Shawshank.jpg',
+                'Shawshank Redemption',
+                'Adventure/Prison Break',
+                '1994',
+                '9.8'
+              ),
+            ],
+          ),
+
+        ),
+      ),
+    );
+  }
+
+  Widget _movielist(
+    String imagePath,
+    String title,
+    String genre,
+    String releaseDate,
+    String imdb,
+  ) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12.w),
+      height: 120.h,
+      width: 374.w,
+      decoration: BoxDecoration(
+        color: const Color(0x3B545454),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: InkWell(
+        onTap: () {},
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(10.w),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: SizedBox(
+                  height: 120.h,
+                  width: 90.w,
+                  child: Image.asset(imagePath, fit: BoxFit.cover),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: 15.h, right: 10.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      genre,
+                      style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      releaseDate,
+                      style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: Colors.yellow[700],
+                          size: 15.sp,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          imdb,
+                          style: TextStyle(
+                            color: Colors.yellow[700],
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12.sp,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5.h),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 7.h, right: 12.w),
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.add,
+                  size: 25.h,
+                  color: Colors.white38,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

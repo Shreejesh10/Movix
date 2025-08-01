@@ -2,7 +2,6 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:recommender/common_widgets/custom_app_bar.dart';
-
 import '../../core/route_config/route_names.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -51,7 +50,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           _editProfileButton('Content Preference',
               Icons.menu_book_outlined,
                   (){
-                //For On Tap
+            Navigator.pushNamed(context, RouteName.onboardingScreen);
               }
           ),
           _editProfileButton('Log out',
@@ -113,7 +112,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                  image:AssetImage('assets/images/Spidermanpp.jpg') )
+                  image:AssetImage('assets/images/Spidermanpp.jpg'),
+                  fit: BoxFit.cover
+              ),
             ),
           ),
           SizedBox(height: 12.h),
@@ -161,7 +162,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
             Icon(
               icon,
-              color: Colors.grey,
+              color: Colors.grey[600],
               size: 30.sp,
             ),
           ],
@@ -169,6 +170,4 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
     );
   }
-
-
 }

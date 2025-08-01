@@ -177,7 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, RouteName.viewallScreen);
+          },
           child: Text(
             'View all',
             style: TextStyle(
