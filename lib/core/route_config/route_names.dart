@@ -1,4 +1,6 @@
-interface class AuthRouteName {
+class AuthRouteName {
+  AuthRouteName._();
+
   static const String loginScreen = '/login-screen';
   static const String signupScreen = '/signup-screen';
 }
@@ -10,6 +12,8 @@ class RouteName {
   static const String homeScreen = '/home-screen';
   static const String profileScreen = '/profile-screen';
   static const String listScreen = '/list-screen';
-  static AuthRouteName get auth => AuthRouteName(); //getter for login
+  static const String userDashboardScreen = '/User-Dashboard-screen';
+  static const String splashScreen = '/splashScreen';
+  static const String onboardingScreen = '/onboardingScreen';
 
 }

@@ -70,7 +70,7 @@ class RecommenderApp extends StatelessWidget {
             ),
             hoverColor: Colors.transparent,
           ),
-          initialRoute: AuthRouteName.loginScreen,
+          initialRoute: RouteName.splashScreen,
           onGenerateRoute: RouteConfig.generateRoute,
         );
       },

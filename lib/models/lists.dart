@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:recommender/common_widgets/custom_search_bar.dart';
 import 'package:recommender/common_widgets/genre_selection.dart';
-
 import '../common_widgets/custom_app_bar.dart';
 import '../core/route_config/route_names.dart';
 
@@ -31,10 +30,16 @@ class _UserListScreenState extends State<UserListScreen> {
         color: index == 1 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
-        Icons.person,
+        Icons.graphic_eq_outlined,
         size: 30,
         color: index == 2 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
+      Icon(
+        Icons.person,
+        size: 30,
+        color: index == 3 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+      ),
+
     ];
 
     return Scaffold(
@@ -52,7 +57,6 @@ class _UserListScreenState extends State<UserListScreen> {
                   "Watching",
                   'Completed',
                   'Plan to Watch',
-                  'On Hold',
                 ],
                 onGenreSelected: (genre) {},
               ),
@@ -73,7 +77,7 @@ class _UserListScreenState extends State<UserListScreen> {
                 'Racing',
                 '2005',
                 '8.8',
-                10,
+                1,
                 1,
                 1,
               ),
@@ -93,7 +97,7 @@ class _UserListScreenState extends State<UserListScreen> {
                 'Horror',
                 '1994',
                 '8.8',
-                10,
+                1,
                 1,
                 1,
               ),
@@ -103,7 +107,7 @@ class _UserListScreenState extends State<UserListScreen> {
                 'Adventure/Prison Break',
                 '1994',
                 '9.8',
-                10,
+                1,
                 1,
                 1,
               ),
@@ -128,6 +132,9 @@ class _UserListScreenState extends State<UserListScreen> {
             case 1:
               break;
             case 2:
+              Navigator.pushNamed(context, RouteName.userDashboardScreen);
+              break;
+            case 3:
               Navigator.pushNamed(context, RouteName.profileScreen);
               break;
           }

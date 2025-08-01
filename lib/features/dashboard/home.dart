@@ -21,7 +21,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final items = <Widget>[
       Icon(Icons.home,size: 30,color: index == 0 ? Colors.red: Color.fromRGBO(121, 116, 126, 1.0)),
       Icon(Icons.list,size: 30,color: index == 1 ? Colors.red: Color.fromRGBO(121, 116, 126, 1.0)),
-      Icon(Icons.person,size: 30,color: index == 2 ? Colors.red: Color.fromRGBO(121, 116, 126, 1.0)),
+      Icon(
+        Icons.graphic_eq_outlined,
+        size: 30,
+        color: index == 2 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+      ),
+      Icon(Icons.person,size: 30,color: index == 3 ? Colors.red: Color.fromRGBO(121, 116, 126, 1.0)),
 
 
     ];
@@ -144,6 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
               case 1:
                 Navigator.pushNamed(context, RouteName.listScreen);
               case 2:
+                Navigator.pushNamed(context, RouteName.userDashboardScreen);
+                break;
+              case 3:
                 Navigator.pushNamed(context, RouteName.profileScreen);
                 break;
               default:

@@ -3,8 +3,11 @@ import 'package:recommender/core/route_config/route_names.dart';
 import 'package:recommender/features/auth/login.dart';
 import 'package:recommender/features/auth/signup.dart';
 import 'package:recommender/features/dashboard/home.dart';
+import 'package:recommender/features/dashboard/user_dashboard.dart';
 import 'package:recommender/features/dashboard/user_profile.dart';
 import 'package:recommender/models/lists.dart';
+import 'package:recommender/models/onboarding_screen.dart';
+import 'package:recommender/models/splash_screen.dart';
 
 class RouteConfig {
   RouteConfig._();
@@ -33,6 +36,18 @@ class RouteConfig {
       case RouteName.listScreen:
         return MaterialPageRoute(
             builder: (_) => const UserListScreen()
+        );
+      case RouteName.userDashboardScreen:
+        return MaterialPageRoute(
+            builder: (_) => const UserDashboardScreen()
+        );
+      case RouteName.splashScreen:
+        return MaterialPageRoute(
+            builder: (_) => const SplashScreen()
+        );
+      case RouteName.onboardingScreen:
+        return MaterialPageRoute(
+            builder: (_) => const GenreSelectionScreen()
         );
 
 
