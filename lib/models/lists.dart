@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:recommender/common_widgets/custom_search_bar.dart';
+import 'package:recommender/common_widgets/edit_movie_status.dart';
 import 'package:recommender/common_widgets/genre_selection.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../core/route_config/route_names.dart';
@@ -57,7 +58,6 @@ class _UserListScreenState extends State<UserListScreen> {
           padding: EdgeInsets.only(
             left: 15.w,
             right: 15.w,
-            top: 10.h,
             bottom: 55.h,
           ),
           child: Column(
@@ -161,16 +161,14 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 
-  Widget _movielist(
-    String imagePath,
-    String title,
-    String genre,
-    String releaseDate,
-    String imdb,
-    double progress,
-    int currentEp,
-    int totalEp,
-  ) {
+  Widget _movielist(String imagePath,
+      String title,
+      String genre,
+      String releaseDate,
+      String imdb,
+      double progress,
+      int currentEp,
+      int totalEp,) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.w),
       height: 135.h,
@@ -180,7 +178,9 @@ class _UserListScreenState extends State<UserListScreen> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, RouteName.movieDetailScreen);
+        },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -262,7 +262,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                 builder: (context, constraints) {
                                   final width =
                                       constraints.maxWidth *
-                                      progress.clamp(0.0, 1.0);
+                                          progress.clamp(0.0, 1.0);
                                   return Container(
                                     width: width,
                                     height: 8.h,
@@ -294,7 +294,9 @@ class _UserListScreenState extends State<UserListScreen> {
             Padding(
               padding: EdgeInsets.only(top: 6.h, right: 12.w),
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  _editButtonAction();
+                },
                 icon: Icon(
                   Icons.edit_outlined,
                   size: 20.h,
@@ -307,4 +309,76 @@ class _UserListScreenState extends State<UserListScreen> {
       ),
     );
   }
+
+  void _editButtonAction() {
+    String selectedStatus = 'Currently Watching';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[900],
+              title: const Text('Change Status'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  MovieListTile(
+                    imagePath: 'assets/images/Movie Poster/Pulp Fiction.png',
+                    title: 'Pulp Fiction',
+                    genre: 'Adventure',
+                    releaseDate: '1994',
+                    imdb: '8.8',
+                  ),
+
+                  const SizedBox(height: 12),
+                  DropdownButton<String>(
+                    value: selectedStatus,
+                    isExpanded: true,
+                    dropdownColor: Colors.grey[900],
+                    items: ['Currently Watching', 'Completed', 'On hold', 'Plan to watch']
+                        .map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedStatus = newValue!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Cancel
+                  },
+                  child: const Text('Cancel', style: TextStyle(color: Colors.white),),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    elevation: 4,
+                  ),
+                  onPressed: () {
+                    print("Selected status: $selectedStatus");
+                    Navigator.of(context).pop(); // Save
+
+                  },
+                  child: const Text('Save', style: TextStyle(color: Colors.white, fontSize:18),),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+
 }

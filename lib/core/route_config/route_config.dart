@@ -6,6 +6,7 @@ import 'package:recommender/features/dashboard/home.dart';
 import 'package:recommender/features/dashboard/user_dashboard.dart';
 import 'package:recommender/features/dashboard/user_profile.dart';
 import 'package:recommender/models/lists.dart';
+import 'package:recommender/models/movie_details.dart';
 import 'package:recommender/models/onboarding_screen.dart';
 import 'package:recommender/models/splash_screen.dart';
 import 'package:recommender/models/viewall.dart';
@@ -53,6 +54,10 @@ class RouteConfig {
       case RouteName.viewallScreen:
         return MaterialPageRoute(
             builder: (_) => const ViewallScreen()
+        );
+      case RouteName.movieDetailScreen:
+        return MaterialPageRoute(
+            builder: (_) => const MovieDetailsScreen()
         );
 
 

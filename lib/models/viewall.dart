@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../common_widgets/edit_movie_status.dart';
+
 class ViewallScreen extends StatefulWidget {
   const ViewallScreen({super.key});
 
@@ -165,7 +167,9 @@ class _ViewallScreenState extends State<ViewallScreen> {
             Padding(
               padding: EdgeInsets.only(top: 7.h, right: 12.w),
               child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  _addStatusList();
+                },
                 icon: Icon(
                   Icons.add,
                   size: 25.h,
@@ -176,6 +180,74 @@ class _ViewallScreenState extends State<ViewallScreen> {
           ],
         ),
       ),
+    );
+  }
+  void _addStatusList() {
+    String selectedStatus = 'Currently Watching';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[900],
+              title: const Text('Change Status'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  MovieListTile(
+                    imagePath: 'assets/images/Movie Poster/Pulp Fiction.png',
+                    title: 'Pulp Fiction',
+                    genre: 'Adventure',
+                    releaseDate: '1994',
+                    imdb: '8.8',
+                  ),
+
+                  const SizedBox(height: 8),
+                  DropdownButton<String>(
+                    value: selectedStatus,
+                    isExpanded: true,
+                    dropdownColor: Colors.grey[900],
+                    items: ['Currently Watching', 'Completed', 'On hold', 'Plan to watch']
+                        .map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedStatus = newValue!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Cancel
+                  },
+                  child: const Text('Cancel', style: TextStyle(color: Colors.white),),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    elevation: 4,
+                  ),
+                  onPressed: () {
+                    print("Selected status: $selectedStatus");
+                    Navigator.of(context).pop(); // Save
+
+                  },
+                  child: const Text('Save', style: TextStyle(color: Colors.white, fontSize:18),),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

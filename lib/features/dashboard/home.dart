@@ -16,19 +16,32 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
+
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
-      Icon(Icons.home,size: 30,color: index == 0 ? Colors.red: Color.fromRGBO(121, 116, 126, 1.0)),
-      Icon(Icons.list,size: 30,color: index == 1 ? Colors.red: Color.fromRGBO(121, 116, 126, 1.0)),
+      Icon(
+        Icons.home,
+        size: 30,
+        color: index == 0 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
+      ),
+      Icon(
+        Icons.list,
+        size: 30,
+        color: index == 1 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
+      ),
       Icon(
         Icons.graphic_eq_outlined,
         size: 30,
-        color: index == 2 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 2
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
-      Icon(Icons.person,size: 30,color: index == 3 ? Colors.red: Color.fromRGBO(121, 116, 126, 1.0)),
-
-
+      Icon(
+        Icons.person,
+        size: 30,
+        color: index == 3 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
+      ),
     ];
     return Scaffold(
       extendBody: true,
@@ -61,26 +74,37 @@ class _HomeScreenState extends State<HomeScreen> {
                     'assets/images/Movie Poster/F1.jpg',
                     'F1',
                     'Racing',
+                    '8.8',
                   ),
                   _movieList(
                     'assets/images/Movie Poster/SpiderMan.png',
                     'SpiderMan',
                     'Sci-Fi',
+                    '8.8',
                   ),
                   _movieList(
                     'assets/images/Movie Poster/Pulp Fiction.png',
                     'Pulp Fiction',
                     'Adventure',
+                    '8.8',
+                  ),
+                  _movieList(
+                    'assets/images/Movie Poster/Forestgump.jpg',
+                    'Tom Hanks and the Fotest Gump',
+                    'Adventure',
+                    '8.8',
                   ),
                   _movieList(
                     'assets/images/Movie Poster/pandorum.jpg',
                     'Pandorum',
                     'Horror',
+                    '8.8',
                   ),
                   _movieList(
                     'assets/images/Movie Poster/Shawshank.jpg',
                     'Shawshank Redemption',
                     'Thriller',
+                    '8.8',
                   ),
                 ],
               ),
@@ -101,32 +125,43 @@ class _HomeScreenState extends State<HomeScreen> {
                     'assets/images/Movie Poster/pandorum.jpg',
                     'Pandorum',
                     'Horror',
+                    '8.8',
                   ),
                   _movieList(
                     'assets/images/Movie Poster/Pulp Fiction.png',
                     'Pulp Fiction',
                     'Adventure',
+                    '8.8',
+                  ),
+                  _movieList(
+                    'assets/images/Movie Poster/Forestgump.jpg',
+                    'Tom Hanks and the Fotest Gump',
+                    'Adventure',
+                    '8.8',
                   ),
                   _movieList(
                     'assets/images/Movie Poster/SpiderMan.png',
                     'SpiderMan',
                     'Sci-Fi',
+                    '8.8',
                   ),
                   _movieList(
                     'assets/images/Movie Poster/F1.jpg',
                     'F1',
                     'Racing',
+                    '8.8',
                   ),
                   _movieList(
                     'assets/images/Movie Poster/Shawshank.jpg',
                     'Shawshank Redemption',
                     'Thriller',
+                    '8.8',
                   ),
                 ],
               ),
             ),
 
-            SizedBox(height: 20.h),
+            SizedBox(height: 70.h),
           ],
         ),
       ),
@@ -135,31 +170,30 @@ class _HomeScreenState extends State<HomeScreen> {
         index: index,
         backgroundColor: Colors.transparent,
         color: Color.fromRGBO(35, 35, 35, 1.0),
-        buttonBackgroundColor:Color.fromRGBO(35, 35, 35, 1.0),
+        buttonBackgroundColor: Color.fromRGBO(35, 35, 35, 1.0),
         animationDuration: Duration(milliseconds: 400),
 
         items: items,
-          onTap: (newIndex) {
-            setState(() => index = newIndex);
+        onTap: (newIndex) {
+          setState(() => index = newIndex);
 
-            switch (newIndex) {
-              case 0:
+          switch (newIndex) {
+            case 0:
               // Navigate to some screen or perform action
-                break;
-              case 1:
-                Navigator.pushNamed(context, RouteName.listScreen);
-              case 2:
-                Navigator.pushNamed(context, RouteName.userDashboardScreen);
-                break;
-              case 3:
-                Navigator.pushNamed(context, RouteName.profileScreen);
-                break;
-              default:
-              // Do nothing or stay on home
-            }
-          },
+              break;
+            case 1:
+              Navigator.pushNamed(context, RouteName.listScreen);
+            case 2:
+              Navigator.pushNamed(context, RouteName.userDashboardScreen);
+              break;
+            case 3:
+              Navigator.pushNamed(context, RouteName.profileScreen);
+              break;
+            default:
+            // Do nothing or stay on home
+          }
+        },
       ),
-
     );
   }
 
@@ -193,9 +227,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _movieList(String imagePath, String text, String genre) {
+  Widget _movieList(String imagePath, String text, String genre, String imdb) {
     return Container(
-      margin: EdgeInsets.only(right: 12.w), // spacing between cards
+      margin: EdgeInsets.only(right: 12.w),
+      // spacing between cards
       height: 260.h,
       width: 140.w,
       decoration: BoxDecoration(
@@ -205,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          // Handle tap
+          Navigator.pushNamed(context, RouteName.movieDetailScreen);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,10 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 width: double.infinity,
                 height: 180.h,
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.cover,
-                ),
+                child: Image.asset(imagePath, fit: BoxFit.cover),
               ),
             ),
             SizedBox(height: 8.h),
@@ -235,15 +267,38 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+
             Padding(
               padding: EdgeInsets.only(left: 8.w, right: 4.w),
               child: Text(
                 genre,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.grey,
-                ),
+                style: TextStyle(fontSize: 14.sp, color: Colors.grey),
               ),
+            ),
+
+            Padding(
+              padding: EdgeInsets.only(left: 6.w, top: 2.w),
+              child:
+                Row(
+                  children: [
+                    Icon(
+                      Icons.star,
+                      color: Colors.yellow[700],
+                      size: 15.sp,
+                    ),
+                    SizedBox(width: 4.w),
+                    Text(
+                      imdb,
+                      style: TextStyle(
+                        color: Colors.yellow[700],
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12.sp,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ],
+                ),
+
             ),
           ],
         ),

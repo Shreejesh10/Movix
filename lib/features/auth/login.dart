@@ -29,12 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submit() {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
-      // If everything is valid, proceed
       Navigator.pushNamed(context, RouteName.onboardingScreen);
     } else {
-      // Autofocus first invalid field
       if (_emailController.text.isEmpty ||
-          !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(_emailController.text.trim())) {
+          !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
+              .hasMatch(_emailController.text.trim())) {
         _emailFocus.requestFocus();
       } else {
         _passwordFocus.requestFocus();
@@ -44,150 +43,168 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 23.h),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Text(
-                      'My Movie List',
+    return WillPopScope(
+      onWillPop: () async => false, // Disable back button
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 23.h),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Text(
+                        'My Movie List',
+                        style: TextStyle(
+                          fontFamily: 'Rubik',
+                          fontSize: 44.sp,
+                          color: const Color(0xFFFF383C),
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      'Sign In!',
                       style: TextStyle(
-                        fontFamily: 'Rubik',
-                        fontSize: 44.sp,
-                        color: const Color(0xFFFF383C),
-                        letterSpacing: 1.2,
+                        fontFamily: 'Poppins',
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 12.h),
-                  Text(
-                    'Sign In!',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 30.h),
+                    SizedBox(height: 30.h),
 
-                  _field(_emailController, 'Email Address', focusNode: _emailFocus, icon: Icons.person),
-                  _field(_passwordController, 'Password', isPassword: true, focusNode: _passwordFocus),
+                    _field(_emailController, 'Email Address',
+                        focusNode: _emailFocus, icon: Icons.person),
+                    _field(_passwordController, 'Password',
+                        isPassword: true, focusNode: _passwordFocus),
 
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Forgot password?',
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          color: Colors.grey[400],
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Forgot password?',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.grey[400],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10.h),
+                    SizedBox(height: 10.h),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50.h,
-                    child: ElevatedButton(
-                      onPressed: _submit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF383C),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.r),
-                        ),
-                      ),
-                      child: Text(
-                        'Sign in',
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(color: Colors.grey, thickness: 1.5, indent: 17.w, endIndent: 10.w),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(8.w),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.grey, width: 2),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50.h,
+                      child: ElevatedButton(
+                        onPressed: _submit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF383C),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
                         ),
                         child: Text(
-                          'Or',
-                          style: TextStyle(fontSize: 14.sp, color: Colors.white),
+                          'Sign in',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                      Expanded(
-                        child: Divider(color: Colors.grey, thickness: 1.5, indent: 10.w, endIndent: 17.w),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 15.h),
+                    ),
+                    SizedBox(height: 20.h),
 
-                  GestureDetector(
-                    onTap: () => print("Google Sign-In tapped"),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.r),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                              color: Colors.grey,
+                              thickness: 1.5,
+                              indent: 17.w,
+                              endIndent: 10.w),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(8.w),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.grey, width: 2),
+                          ),
+                          child: Text(
+                            'Or',
+                            style:
+                            TextStyle(fontSize: 14.sp, color: Colors.white),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                              color: Colors.grey,
+                              thickness: 1.5,
+                              indent: 10.w,
+                              endIndent: 17.w),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15.h),
+
+                    GestureDetector(
+                      onTap: () => print("Google Sign-In tapped"),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Continue with Google",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(width: 10.w),
+                            Icon(Icons.g_translate,
+                                color: Colors.black, size: 25.sp),
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Continue with Google",
+                    ),
+                    SizedBox(height: 20.h),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Don't have an account?",
                             style: TextStyle(
-                              fontSize: 16.sp,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                                fontSize: 15.sp, color: Colors.white)),
+                        TextButton(
+                          onPressed: () => Navigator.pushNamed(
+                              context, AuthRouteName.signupScreen),
+                          child: Text(
+                            'Sign Up?',
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              color: Color(0xFFFF383C),
+                              decoration: TextDecoration.underline,
                             ),
                           ),
-                          SizedBox(width: 10.w),
-                          Icon(Icons.g_translate, color: Colors.black, size: 25.sp),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Don't have an account?", style: TextStyle(fontSize: 15.sp, color: Colors.white)),
-                      TextButton(
-                        onPressed: () => Navigator.pushNamed(context, AuthRouteName.signupScreen),
-                        child: Text(
-                          'Sign Up?',
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                            color: Color(0xFFFF383C),
-                            decoration: TextDecoration.underline,
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -196,13 +213,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _field(
-      TextEditingController controller,
-      String hintText, {
-        bool isPassword = false,
-        IconData? icon,
-        FocusNode? focusNode,
-      }) {
+  Widget _field(TextEditingController controller, String hintText,
+      {bool isPassword = false, IconData? icon, FocusNode? focusNode}) {
     return StatefulBuilder(
       builder: (context, setState) {
         return Padding(
@@ -217,7 +229,8 @@ class _LoginScreenState extends State<LoginScreen> {
               hintStyle: TextStyle(color: Colors.grey[600]),
               filled: true,
               fillColor: const Color(0xFF1C1C1E),
-              contentPadding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
+              contentPadding:
+              EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
                 borderSide: BorderSide(color: Colors.grey.shade700),
@@ -233,7 +246,9 @@ class _LoginScreenState extends State<LoginScreen> {
               suffixIcon: isPassword
                   ? IconButton(
                 icon: Icon(
-                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                  _isPasswordVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
                   color: Colors.grey[500],
                 ),
                 onPressed: () {
@@ -249,7 +264,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 return 'Please enter $hintText';
               }
               if (hintText == 'Email Address' &&
-                  !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(value.trim())) {
+                  !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
+                      .hasMatch(value.trim())) {
                 return 'Enter a valid email';
               }
               return null;
