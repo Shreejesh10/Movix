@@ -33,9 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Icon(
         Icons.graphic_eq_outlined,
         size: 30,
-        color: index == 2
-            ? Colors.red
-            : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 2 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.person,
@@ -43,156 +41,102 @@ class _HomeScreenState extends State<HomeScreen> {
         color: index == 3 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
       ),
     ];
-    return Scaffold(
-      extendBody: true,
-      appBar: const CustomAppBar(title: 'Explore'),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Top section
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-              child: Column(
-                children: [
-                  SearchFilterBar(),
-                  SizedBox(height: 15.h),
-                  GenreSelector(),
-                  SizedBox(height: 15.h),
-                  _content('Recommended For You'),
-                ],
+
+    return PopScope(
+      canPop:false,
+      child: Scaffold(
+        extendBody: true,
+        appBar: const CustomAppBar(title: 'Explore'),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top section
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                child: Column(
+                  children: [
+                    SearchFilterBar(),
+                    SizedBox(height: 15.h),
+                    GenreSelector(),
+                    SizedBox(height: 15.h),
+                    _content('Recommended For You'),
+                  ],
+                ),
               ),
-            ),
 
-            // Recommended movies scroll
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.only(left: 15.w),
-              child: Row(
-                children: [
-                  _movieList(
-                    'assets/images/Movie Poster/F1.jpg',
-                    'F1',
-                    'Racing',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/SpiderMan.png',
-                    'SpiderMan',
-                    'Sci-Fi',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/Pulp Fiction.png',
-                    'Pulp Fiction',
-                    'Adventure',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/Forestgump.jpg',
-                    'Tom Hanks and the Fotest Gump',
-                    'Adventure',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/pandorum.jpg',
-                    'Pandorum',
-                    'Horror',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/Shawshank.jpg',
-                    'Shawshank Redemption',
-                    'Thriller',
-                    '8.8',
-                  ),
-                ],
+              // Recommended movies scroll
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.only(left: 15.w),
+                child: Row(
+                  children: [
+                    _movieList('assets/images/Movie Poster/F1.jpg', 'F1', 'Action/Sport', '8.5'),
+                    _movieList('assets/images/Movie Poster/SpiderMan.png', 'Spider-Man: Into the Spider-Verse', 'Animation/Action', '8.4'),
+                    _movieList('assets/images/Movie Poster/Pulp Fiction.png', 'Pulp Fiction', 'Crime/Drama', '8.9'),
+                    _movieList('assets/images/Movie Poster/Forestgump.jpg', 'Forrest Gump', 'Drama/Romance', '8.8'),
+                    _movieList('assets/images/Movie Poster/pandorum.jpg', 'Pandorum', 'Horror/Sci-fi', '6.7'),
+                    _movieList('assets/images/Movie Poster/Shawshank.jpg', 'The Shawshank Redemption', 'Drama/Prison', '9.3'),
+                    _movieList('assets/images/Movie Poster/ted.png', 'Ted', 'Comedy/Fantasy', '6.9'),
+                    _movieList('assets/images/Movie Poster/romeo.png', 'Romeo + Juliet', 'Drama/Romance', '6.8'),
+
+                  ],
+                ),
               ),
-            ),
 
-            // Being Watched section
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-              child: _content('Being Watched Right Now'),
-            ),
-
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.only(left: 15.w),
-              child: Row(
-                children: [
-                  _movieList(
-                    'assets/images/Movie Poster/pandorum.jpg',
-                    'Pandorum',
-                    'Horror',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/Pulp Fiction.png',
-                    'Pulp Fiction',
-                    'Adventure',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/Forestgump.jpg',
-                    'Tom Hanks and the Fotest Gump',
-                    'Adventure',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/SpiderMan.png',
-                    'SpiderMan',
-                    'Sci-Fi',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/F1.jpg',
-                    'F1',
-                    'Racing',
-                    '8.8',
-                  ),
-                  _movieList(
-                    'assets/images/Movie Poster/Shawshank.jpg',
-                    'Shawshank Redemption',
-                    'Thriller',
-                    '8.8',
-                  ),
-                ],
+              // Being Watched section
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                child: _content('Being Watched Right Now'),
               ),
-            ),
 
-            SizedBox(height: 70.h),
-          ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.only(left: 15.w),
+                child: Row(
+                  children: [
+                    _movieList('assets/images/Movie Poster/romeo.png', 'Romeo + Juliet', 'Drama/Romance', '6.8'),
+                    _movieList('assets/images/Movie Poster/Pulp Fiction.png', 'Pulp Fiction', 'Crime/Drama', '8.9'),
+                    _movieList('assets/images/Movie Poster/pandorum.jpg', 'Pandorum', 'Horror/Sci-fi', '6.7'),
+                    _movieList('assets/images/Movie Poster/Forestgump.jpg', 'Forrest Gump', 'Drama/Romance', '8.8'),
+                    _movieList('assets/images/Movie Poster/SpiderMan.png', 'Spider-Man: Into the Spider-Verse', 'Animation/Action', '8.4'),
+                    _movieList('assets/images/Movie Poster/F1.jpg', 'F1', 'Action/Sport', '8.5'),
+                    _movieList('assets/images/Movie Poster/Shawshank.jpg', 'The Shawshank Redemption', 'Drama/Prison', '9.3'),
+
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 70.h),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: CurvedNavigationBar(
-        height: 65.h,
-        index: index,
-        backgroundColor: Colors.transparent,
-        color: Color.fromRGBO(35, 35, 35, 1.0),
-        buttonBackgroundColor: Color.fromRGBO(35, 35, 35, 1.0),
-        animationDuration: Duration(milliseconds: 400),
+        bottomNavigationBar: CurvedNavigationBar(
+          height: 65.h,
+          index: index,
+          backgroundColor: Colors.transparent,
+          color: const Color.fromRGBO(35, 35, 35, 1.0),
+          buttonBackgroundColor: const Color.fromRGBO(35, 35, 35, 1.0),
+          animationDuration: const Duration(milliseconds: 400),
+          items: items,
+          onTap: (newIndex) {
+            setState(() => index = newIndex);
 
-        items: items,
-        onTap: (newIndex) {
-          setState(() => index = newIndex);
-
-          switch (newIndex) {
-            case 0:
-              // Navigate to some screen or perform action
-              break;
-            case 1:
-              Navigator.pushNamed(context, RouteName.listScreen);
-            case 2:
-              Navigator.pushNamed(context, RouteName.userDashboardScreen);
-              break;
-            case 3:
-              Navigator.pushNamed(context, RouteName.profileScreen);
-              break;
-            default:
-            // Do nothing or stay on home
-          }
-        },
+            switch (newIndex) {
+              case 0:
+                break;
+              case 1:
+                Navigator.pushNamed(context, RouteName.listScreen);
+                break;
+              case 2:
+                Navigator.pushNamed(context, RouteName.userDashboardScreen);
+                break;
+              case 3:
+                Navigator.pushNamed(context, RouteName.profileScreen);
+                break;
+            }
+          },
+        ),
       ),
     );
   }
@@ -227,10 +171,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _movieList(String imagePath, String text, String genre, String imdb) {
+  Widget _movieList(String imagePath, String title, String genre, String imdb) {
     return Container(
       margin: EdgeInsets.only(right: 12.w),
-      // spacing between cards
       height: 260.h,
       width: 140.w,
       decoration: BoxDecoration(
@@ -257,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(
               padding: EdgeInsets.only(left: 8.w, right: 4.w),
               child: Text(
-                text,
+                title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -267,7 +210,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
             Padding(
               padding: EdgeInsets.only(left: 8.w, right: 4.w),
               child: Text(
@@ -275,30 +217,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontSize: 14.sp, color: Colors.grey),
               ),
             ),
-
             Padding(
               padding: EdgeInsets.only(left: 6.w, top: 2.w),
-              child:
-                Row(
-                  children: [
-                    Icon(
-                      Icons.star,
+              child: Row(
+                children: [
+                  Icon(Icons.star, color: Colors.yellow[700], size: 15.sp),
+                  SizedBox(width: 4.w),
+                  Text(
+                    imdb,
+                    style: TextStyle(
                       color: Colors.yellow[700],
-                      size: 15.sp,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12.sp,
+                      fontFamily: 'Poppins',
                     ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      imdb,
-                      style: TextStyle(
-                        color: Colors.yellow[700],
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12.sp,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ],
-                ),
-
+                  ),
+                ],
+              ),
             ),
           ],
         ),

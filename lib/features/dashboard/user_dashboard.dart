@@ -38,7 +38,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
 
     return Scaffold(
       appBar: const CustomAppBar(title: "Analytics"),
-      backgroundColor: const Color(0xFF1C1C1E),
+
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: Column(
