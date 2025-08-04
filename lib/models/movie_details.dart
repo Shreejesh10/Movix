@@ -127,7 +127,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                                   ),
                                   SizedBox(width: 5.w),
                                   Text(
-                                    "8.9",
+                                    "8.5",
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       color: Colors.white,
@@ -230,7 +230,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     title: 'F1',
                     genre: 'Action/Sport',
                     releaseDate: '2025',
-                    imdb: '8.9',
+                    imdb: '8.5',
                   ),
 
                   const SizedBox(height: 12),
