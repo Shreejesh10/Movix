@@ -4,7 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/route_config/route_names.dart';
 
 class GenreSelectionScreen extends StatefulWidget {
-  const GenreSelectionScreen({super.key});
+  final bool fromSettings;
+  const GenreSelectionScreen({super.key, this.fromSettings = false});
 
   @override
   State<GenreSelectionScreen> createState() => _GenreSelectionScreenState();
@@ -22,14 +23,14 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop:false, // disables the back button
+      canPop:false,
       child: Scaffold(
         body: Stack(
           children: [
             // Background Image
             Positioned.fill(
               child: Image.asset(
-                'assets/images/Spidermanbg.jpg', // Replace with your actual image path
+                'assets/images/Spidermanbg.jpg',
                 fit: BoxFit.cover,
               ),
             ),
@@ -46,7 +47,12 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, RouteName.homeScreen);
+                          if (!widget.fromSettings){
+                            Navigator.pushNamed(context, RouteName.homeScreen);
+                          }else{
+                            Navigator.pop(context);
+                          }
+
                         },
                         child: Text(
                           "Skip",
@@ -132,7 +138,13 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, RouteName.homeScreen);
+                            if(!widget.fromSettings){
+                              Navigator.pushNamed(context, RouteName.homeScreen);
+                            }
+                            else{
+                              Navigator.pop(context);
+                            }
+
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:

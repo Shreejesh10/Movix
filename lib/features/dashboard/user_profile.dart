@@ -1,7 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:recommender/common_widgets/custom_app_bar.dart';
+import 'package:recommender/models/onboarding_screen.dart';
 import '../../core/route_config/route_names.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -51,20 +53,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           _editProfileButton(
             'Edit Profile',
             Icons.mode_edit_outline_outlined,
-                () {
+            () {
               _showEditProfileDialog();
             },
           ),
           _editProfileButton(
             'Content Preference',
             Icons.menu_book_outlined,
-                () {
-              Navigator.pushNamed(context, RouteName.onboardingScreen);
+            () {
+              Navigator.push(
+              context, MaterialPageRoute(builder: (context)=> const GenreSelectionScreen(fromSettings: true,),
+              )
+              );
             },
           ),
           _editProfileButton('Change Password', Icons.password_outlined, () {
             _showChangePasswordDialog();
           }),
+
+          _editProfileButton("Light Mode", CupertinoIcons.moon, () {
+          }),
+
+          //LogOut Button
           _editProfileButton('Log out', Icons.exit_to_app, () {
             showDialog(
               context: context,
@@ -174,13 +184,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         TextEditingController nameController = TextEditingController(
-            text: "Shreejesh Pathak");
+          text: "Shreejesh Pathak",
+        );
         TextEditingController emailController = TextEditingController(
-            text: "shreejeshpathak@gmail.com");
+          text: "shreejeshpathak@gmail.com",
+        );
 
-        String? errorText; // For showing a single error (or use Form for more control)
+        String?
+        errorText; // For showing a single error (or use Form for more control)
 
-        return StatefulBuilder( // Needed to update dialog UI
+        return StatefulBuilder(
+          // Needed to update dialog UI
           builder: (context, setState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
@@ -232,7 +246,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               actions: [
                 TextButton(
                   child: Text(
-                      'Cancel', style: TextStyle(color: Colors.grey[400])),
+                    'Cancel',
+                    style: TextStyle(color: Colors.grey[400]),
+                  ),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 ElevatedButton(
@@ -243,7 +259,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ),
                   ),
                   child: const Text(
-                      'Save', style: TextStyle(color: Colors.white)),
+                    'Save',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onPressed: () {
                     String name = nameController.text.trim();
                     String email = emailController.text.trim();
@@ -256,7 +274,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       return;
                     }
                     final RegExp gmailRegex = RegExp(
-                        r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$');
+                      r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$',
+                    );
                     if (!gmailRegex.hasMatch(email)) {
                       setState(() {
                         errorText = "Enter a valid Email ";
@@ -275,11 +294,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       },
     );
   }
+
   Widget _logout() {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
       backgroundColor: const Color(0xFF1E1E1E),
       title: Text(
         "Are you sure?",
@@ -291,10 +309,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
       content: Text(
         "Do you really want to log out?",
-        style: TextStyle(
-          fontSize: 16.sp,
-          color: Colors.grey[400],
-        ),
+        style: TextStyle(fontSize: 16.sp, color: Colors.grey[400]),
       ),
       actions: [
         TextButton(
@@ -325,13 +340,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ],
     );
   }
+
   void _showChangePasswordDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        TextEditingController currentPasswordController = TextEditingController();
+        TextEditingController currentPasswordController =
+            TextEditingController();
         TextEditingController newPasswordController = TextEditingController();
-        TextEditingController confirmPasswordController = TextEditingController();
+        TextEditingController confirmPasswordController =
+            TextEditingController();
 
         String? errorText;
 
@@ -405,7 +423,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               ),
               actions: [
                 TextButton(
-                  child: Text('Cancel', style: TextStyle(color: Colors.grey[400])),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.grey[400]),
+                  ),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 ElevatedButton(
@@ -415,19 +436,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
-                  child: const Text('Save', style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onPressed: () {
                     String currentPass = currentPasswordController.text.trim();
                     String newPass = newPasswordController.text.trim();
                     String confirmPass = confirmPasswordController.text.trim();
 
-                    if (currentPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
+                    if (currentPass.isEmpty ||
+                        newPass.isEmpty ||
+                        confirmPass.isEmpty) {
                       setState(() => errorText = "All fields are required.");
                       return;
                     }
 
                     if (newPass.length < 6) {
-                      setState(() => errorText = "Password must be at least 6 characters.");
+                      setState(
+                        () => errorText =
+                            "Password must be at least 6 characters.",
+                      );
                       return;
                     }
 
@@ -448,6 +477,4 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       },
     );
   }
-
-
 }

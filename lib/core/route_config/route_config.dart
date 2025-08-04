@@ -20,56 +20,35 @@ class RouteConfig {
 
     switch (screenName) {
       case AuthRouteName.loginScreen:
-        return MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
       case AuthRouteName.signupScreen:
-        return MaterialPageRoute(
-            builder: (_) => const SignupScreen()
-        );
+        return MaterialPageRoute(builder: (_) => const SignupScreen());
       case RouteName.homeScreen:
-        return MaterialPageRoute(
-            builder:(_) => const HomeScreen()
-        );
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
       case RouteName.profileScreen:
-        return MaterialPageRoute(
-            builder: (_) => const UserProfileScreen()
-        );
+        return MaterialPageRoute(builder: (_) => const UserProfileScreen());
       case RouteName.listScreen:
-        return MaterialPageRoute(
-            builder: (_) => const UserListScreen()
-        );
+        return MaterialPageRoute(builder: (_) => const UserListScreen());
       case RouteName.userDashboardScreen:
-        return MaterialPageRoute(
-            builder: (_) => const UserDashboardScreen()
-        );
+        return MaterialPageRoute(builder: (_) => const UserDashboardScreen());
       case RouteName.splashScreen:
-        return MaterialPageRoute(
-            builder: (_) => const SplashScreen()
-        );
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case RouteName.onboardingScreen:
-        return MaterialPageRoute(
-            builder: (_) => const GenreSelectionScreen()
-        );
+        return MaterialPageRoute(builder: (_) => const GenreSelectionScreen());
       case RouteName.viewallScreen:
-        return MaterialPageRoute(
-            builder: (_) => const ViewallScreen()
-        );
+        return MaterialPageRoute(builder: (_) => const ViewallScreen());
       case RouteName.movieDetailScreen:
-        return MaterialPageRoute(
-            builder: (_) => const MovieDetailsScreen()
-        );
-
+        return MaterialPageRoute(builder: (_) => const MovieDetailsScreen());
 
       default:
         return _errorRoute();
     }
   }
+
   static Route<dynamic> _errorRoute() {
     return MaterialPageRoute(
-      builder: (_) => const Scaffold(
-        body: Center(child: Text('No route defined')),
-      ),
+      builder: (_) =>
+          const Scaffold(body: Center(child: Text('No route defined'))),
     );
   }
 }

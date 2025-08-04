@@ -57,17 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: Text(
-                        'My Movie List',
-                        style: TextStyle(
-                          fontFamily: 'Rubik',
-                          fontSize: 44.sp,
-                          color: const Color(0xFFFF383C),
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                    ),
                     SizedBox(height: 12.h),
                     Text(
                       'Sign In!',

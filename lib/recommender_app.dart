@@ -70,6 +70,7 @@ class RecommenderApp extends StatelessWidget {
             ),
             hoverColor: Colors.transparent,
           ),
+          darkTheme: ThemeData.dark(),
           initialRoute: RouteName.splashScreen,
           onGenerateRoute: RouteConfig.generateRoute,
         );

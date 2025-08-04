@@ -23,7 +23,12 @@ class SearchFilterBar extends StatelessWidget {
                 SizedBox(width: 8.w),
                 Expanded(
                   child: TextField(
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 16.h,
+                    ),
                     decoration: InputDecoration(
+
                       hintText: 'Search by Name and Genre',
                       border: InputBorder.none,
                       hintStyle: TextStyle(
@@ -31,7 +36,7 @@ class SearchFilterBar extends StatelessWidget {
                         fontSize: 14.sp,
                       ),
                     ),
-                    style: TextStyle(fontSize: 16.sp),
+
                   ),
                 ),
               ],

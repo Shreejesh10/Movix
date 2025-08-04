@@ -27,17 +27,12 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
-                Text(
-                  'My Movie List',
-                  style: TextStyle(
-                    fontFamily: 'Rubik',
-                    fontSize: 44.sp,
-                    color: const Color.fromRGBO(255, 56, 60, 1.0),
-                    letterSpacing: 1.2,
-                  ),
-                ),
+
                 SizedBox(height: 12.h),
+
                 Text(
                   'Sign Up!',
                   style: TextStyle(
@@ -55,7 +50,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 SizedBox(height: 20.h),
                 SizedBox(
-                  width: 314.w,
+                  width: double.infinity,
                   height: 50.h,
                   child: Container(
                     decoration: BoxDecoration(
