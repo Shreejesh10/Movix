@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return PopScope(
-      canPop:false,
+      canPop: false,
       child: Scaffold(
         extendBody: true,
         appBar: const CustomAppBar(title: 'Explore'),
@@ -71,15 +71,54 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(left: 15.w),
                 child: Row(
                   children: [
-                    _movieList('assets/images/Movie Poster/F1.jpg', 'F1', 'Action/Sport', '8.5'),
-                    _movieList('assets/images/Movie Poster/SpiderMan.png', 'Spider-Man: Into the Spider-Verse', 'Animation/Action', '8.4'),
-                    _movieList('assets/images/Movie Poster/Pulp Fiction.png', 'Pulp Fiction', 'Crime/Drama', '8.9'),
-                    _movieList('assets/images/Movie Poster/Forestgump.jpg', 'Forrest Gump', 'Drama/Romance', '8.8'),
-                    _movieList('assets/images/Movie Poster/pandorum.jpg', 'Pandorum', 'Horror/Sci-fi', '6.7'),
-                    _movieList('assets/images/Movie Poster/Shawshank.jpg', 'The Shawshank Redemption', 'Drama/Prison', '9.3'),
-                    _movieList('assets/images/Movie Poster/ted.png', 'Ted', 'Comedy/Fantasy', '6.9'),
-                    _movieList('assets/images/Movie Poster/romeo.png', 'Romeo + Juliet', 'Drama/Romance', '6.8'),
-
+                    _movieList(
+                      'assets/images/Movie Poster/F1.jpg',
+                      'F1',
+                      'Action/Sport',
+                      '8.5',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/SpiderMan.png',
+                      'Spider-Man: Into the Spider-Verse',
+                      'Animation/Action',
+                      '8.4',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/Pulp Fiction.png',
+                      'Pulp Fiction',
+                      'Crime/Drama',
+                      '8.9',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/Forestgump.jpg',
+                      'Forrest Gump',
+                      'Drama/Romance',
+                      '8.8',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/pandorum.jpg',
+                      'Pandorum',
+                      'Horror/Sci-fi',
+                      '6.7',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/Shawshank.jpg',
+                      'The Shawshank Redemption',
+                      'Drama/Prison',
+                      '9.3',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/ted.png',
+                      'Ted',
+                      'Comedy/Fantasy',
+                      '6.9',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/romeo.png',
+                      'Romeo + Juliet',
+                      'Drama/Romance',
+                      '6.8',
+                    ),
                   ],
                 ),
               ),
@@ -95,14 +134,48 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(left: 15.w),
                 child: Row(
                   children: [
-                    _movieList('assets/images/Movie Poster/romeo.png', 'Romeo + Juliet', 'Drama/Romance', '6.8'),
-                    _movieList('assets/images/Movie Poster/Pulp Fiction.png', 'Pulp Fiction', 'Crime/Drama', '8.9'),
-                    _movieList('assets/images/Movie Poster/pandorum.jpg', 'Pandorum', 'Horror/Sci-fi', '6.7'),
-                    _movieList('assets/images/Movie Poster/Forestgump.jpg', 'Forrest Gump', 'Drama/Romance', '8.8'),
-                    _movieList('assets/images/Movie Poster/SpiderMan.png', 'Spider-Man: Into the Spider-Verse', 'Animation/Action', '8.4'),
-                    _movieList('assets/images/Movie Poster/F1.jpg', 'F1', 'Action/Sport', '8.5'),
-                    _movieList('assets/images/Movie Poster/Shawshank.jpg', 'The Shawshank Redemption', 'Drama/Prison', '9.3'),
-
+                    _movieList(
+                      'assets/images/Movie Poster/romeo.png',
+                      'Romeo + Juliet',
+                      'Drama/Romance',
+                      '6.8',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/Pulp Fiction.png',
+                      'Pulp Fiction',
+                      'Crime/Drama',
+                      '8.9',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/pandorum.jpg',
+                      'Pandorum',
+                      'Horror/Sci-fi',
+                      '6.7',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/Forestgump.jpg',
+                      'Forrest Gump',
+                      'Drama/Romance',
+                      '8.8',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/SpiderMan.png',
+                      'Spider-Man: Into the Spider-Verse',
+                      'Animation/Action',
+                      '8.4',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/F1.jpg',
+                      'F1',
+                      'Action/Sport',
+                      '8.5',
+                    ),
+                    _movieList(
+                      'assets/images/Movie Poster/Shawshank.jpg',
+                      'The Shawshank Redemption',
+                      'Drama/Prison',
+                      '9.3',
+                    ),
                   ],
                 ),
               ),
@@ -111,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+
         bottomNavigationBar: CurvedNavigationBar(
           height: 65.h,
           index: index,

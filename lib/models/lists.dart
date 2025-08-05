@@ -10,12 +10,31 @@ import '../core/route_config/route_names.dart';
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
 
+
   @override
   State<UserListScreen> createState() => _UserListScreenState();
+
+
 }
+
 
 class _UserListScreenState extends State<UserListScreen> {
   int index = 1;
+  final ScrollController _scrollController = ScrollController(); // <-- Add this
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // <-- Dispose the controller
+    super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,6 +182,13 @@ class _UserListScreenState extends State<UserListScreen> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _scrollToTop,
+        backgroundColor: Colors.red,
+
+        shape: CircleBorder(),
+        child: Icon(Icons.arrow_upward_outlined, color: Colors.white,size: 30.sp,),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 65.h,

@@ -186,15 +186,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                         SizedBox(
                           width: 50.w,
                           height: 50.w,
-                          child: ElevatedButton(
+                          child: FloatingActionButton(
+                            backgroundColor: Colors.red,
+                            shape: CircleBorder(),
                             onPressed: () {
                               _editButtonAction();
                             },
-                            style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              backgroundColor: Colors.red,
-                              padding: EdgeInsets.zero,
-                            ),
+
                             child: Icon(Icons.edit_outlined, size: 28.sp, color: Colors.white),
                           ),
                         ),
