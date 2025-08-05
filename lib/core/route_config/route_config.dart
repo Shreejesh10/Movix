@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recommender/core/route_config/route_names.dart';
 import 'package:recommender/features/auth/login.dart';
 import 'package:recommender/features/auth/signup.dart';
+import 'package:recommender/features/dashboard/admin_dashboard.dart';
 import 'package:recommender/features/dashboard/home.dart';
 import 'package:recommender/features/dashboard/user_dashboard.dart';
 import 'package:recommender/features/dashboard/user_profile.dart';
@@ -39,6 +40,8 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => const ViewallScreen());
       case RouteName.movieDetailScreen:
         return MaterialPageRoute(builder: (_) => const MovieDetailsScreen());
+      case RouteName.adminDashboard:
+        return MaterialPageRoute(builder: (_) => const AdminDashboard());
 
       default:
         return _errorRoute();

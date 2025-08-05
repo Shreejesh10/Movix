@@ -29,7 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submit() {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
-      Navigator.pushNamed(context, RouteName.onboardingScreen);
+      final email = _emailController.text.trim();
+
+      if (email == 'admin@gmail.com') {
+        Navigator.pushNamed(context, RouteName.adminDashboard);
+      } else {
+        Navigator.pushNamed(context, RouteName.homeScreen);
+      }
     } else {
       if (_emailController.text.isEmpty ||
           !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
@@ -41,10 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop:false, // Disable back button
+      canPop: false, // Disable back button
       child: Scaffold(
         backgroundColor: Colors.black,
         body: GestureDetector(
@@ -69,10 +76,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 30.h),
 
-                    _field(_emailController, 'Email Address',
-                        focusNode: _emailFocus, icon: Icons.person),
-                    _field(_passwordController, 'Password',
-                        isPassword: true, focusNode: _passwordFocus),
+                    _field(
+                      _emailController,
+                      'Email Address',
+                      focusNode: _emailFocus,
+                      icon: Icons.person,
+                    ),
+                    _field(
+                      _passwordController,
+                      'Password',
+                      isPassword: true,
+                      focusNode: _passwordFocus,
+                    ),
 
                     Align(
                       alignment: Alignment.centerRight,
@@ -116,10 +131,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Expanded(
                           child: Divider(
-                              color: Colors.grey,
-                              thickness: 1.5,
-                              indent: 17.w,
-                              endIndent: 10.w),
+                            color: Colors.grey,
+                            thickness: 1.5,
+                            indent: 17.w,
+                            endIndent: 10.w,
+                          ),
                         ),
                         Container(
                           padding: EdgeInsets.all(8.w),
@@ -129,16 +145,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           child: Text(
                             'Or',
-                            style:
-                            TextStyle(fontSize: 14.sp, color: Colors.white),
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                         Expanded(
                           child: Divider(
-                              color: Colors.grey,
-                              thickness: 1.5,
-                              indent: 10.w,
-                              endIndent: 17.w),
+                            color: Colors.grey,
+                            thickness: 1.5,
+                            indent: 10.w,
+                            endIndent: 17.w,
+                          ),
                         ),
                       ],
                     ),
@@ -164,8 +183,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             SizedBox(width: 10.w),
-                            Icon(Icons.g_translate,
-                                color: Colors.black, size: 25.sp),
+                            Icon(
+                              Icons.g_translate,
+                              color: Colors.black,
+                              size: 25.sp,
+                            ),
                           ],
                         ),
                       ),
@@ -175,12 +197,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Don't have an account?",
-                            style: TextStyle(
-                                fontSize: 15.sp, color: Colors.white)),
+                        Text(
+                          "Don't have an account?",
+                          style: TextStyle(
+                            fontSize: 15.sp,
+                            color: Colors.white,
+                          ),
+                        ),
                         TextButton(
                           onPressed: () => Navigator.pushNamed(
-                              context, AuthRouteName.signupScreen),
+                            context,
+                            AuthRouteName.signupScreen,
+                          ),
                           child: Text(
                             'Sign Up?',
                             style: TextStyle(
@@ -202,8 +230,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _field(TextEditingController controller, String hintText,
-      {bool isPassword = false, IconData? icon, FocusNode? focusNode}) {
+  Widget _field(
+    TextEditingController controller,
+    String hintText, {
+    bool isPassword = false,
+    IconData? icon,
+    FocusNode? focusNode,
+  }) {
     return StatefulBuilder(
       builder: (context, setState) {
         return Padding(
@@ -218,8 +251,10 @@ class _LoginScreenState extends State<LoginScreen> {
               hintStyle: TextStyle(color: Colors.grey[600]),
               filled: true,
               fillColor: const Color(0xFF1C1C1E),
-              contentPadding:
-              EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 18.h,
+                horizontal: 16.w,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
                 borderSide: BorderSide(color: Colors.grey.shade700),
@@ -234,18 +269,18 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               suffixIcon: isPassword
                   ? IconButton(
-                icon: Icon(
-                  _isPasswordVisible
-                      ? Icons.visibility_off
-                      : Icons.visibility,
-                  color: Colors.grey[500],
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isPasswordVisible = !_isPasswordVisible;
-                  });
-                },
-              )
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey[500],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    )
                   : Icon(icon, color: Colors.grey[500]),
             ),
             validator: (value) {
@@ -253,8 +288,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 return 'Please enter $hintText';
               }
               if (hintText == 'Email Address' &&
-                  !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
-                      .hasMatch(value.trim())) {
+                  !RegExp(
+                    r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$',
+                  ).hasMatch(value.trim())) {
                 return 'Enter a valid email';
               }
               return null;
