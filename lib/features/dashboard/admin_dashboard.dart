@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:recommender/common_widgets/custom_app_bar.dart';
+import 'package:recommender/core/route_config/route_names.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -25,87 +26,116 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Admin Dashboard'),
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Profile Row
-              Row(
-                children: [
-                  Container(
-                    width: 100.w,
-                    height: 100.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: const DecorationImage(
-                        image: AssetImage('assets/images/Rajeshdai.jpg'),
-                        fit: BoxFit.cover,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            "Admin Dashboard",
+            style: TextStyle( color: Colors.grey,fontSize: 25.sp),
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.exit_to_app, color: Colors.grey, size: 30,),
+              onPressed: () {
+                Navigator.pushNamed(context, AuthRouteName.loginScreen);
+              },
+            ),
+          ],
+        ),
+
+        body: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 👤 Profile Row
+                Row(
+                  children: [
+                    Container(
+                      width: 100.w,
+                      height: 100.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: const DecorationImage(
+                          image: AssetImage('assets/images/Rajeshdai.jpg'),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 16.w),
-                  Text(
-                    'Hi,\nAdmin Shreejesh',
-                    style: TextStyle(
-                      fontSize: 22.sp,
-                      color: Colors.grey[300],
+                    SizedBox(width: 16.w),
+                    Text(
+                      'Hi,\nAdmin Shreejesh',
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        color: Colors.grey[300],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20.h),
-
-              // Cards
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _infoCard("Total Users", '1'),
-                  SizedBox(width: 16.w),
-                  _infoCard("Total Watched Movies", '1'),
-                ],
-              ),
-              SizedBox(height: 16.h),
-              _infoCard("Most Watched Movie", 'Superman', fullWidth: true),
-              SizedBox(height: 24.h),
-
-              // Pie Chart Title
-              Text(
-                'Top Watched Genres Comparison',
-                style: TextStyle(fontSize: 18.sp, color: Colors.grey[300]),
-              ),
-              SizedBox(height: 16.h),
-
-              // Pie Chart
-              PieChart(
-                dataMap: topWatchedGenresMap,
-                colorList: topGenreColors,
-                chartType: ChartType.ring,
-                ringStrokeWidth: 10,
-                chartRadius: 150.w,
-                chartValuesOptions: const ChartValuesOptions(
-                  showChartValuesInPercentage: true,
-                  showChartValues: true,
-                  chartValueStyle: TextStyle(color: Colors.black),
+                  ],
                 ),
-                legendOptions: const LegendOptions(showLegends: false),
-              ),
-              SizedBox(height: 20.h),
+                SizedBox(height: 20.h),
 
-              // Custom Legend
-              Wrap(
-                spacing: 20.w,
-                runSpacing: 10.h,
-                children: [
-                  _buildLegendDot('Action', Colors.red),
-                  _buildLegendDot('Comedy', Colors.green),
-                  _buildLegendDot('Thriller', Colors.cyan),
-                ],
-              ),
-            ],
+                // 🧾 Info Cards
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _infoCard("Total Users", '1'),
+                    SizedBox(width: 16.w),
+                    _infoCard("Total Watched Movies", '1'),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                _infoCard("Most Watched Movie", 'Superman', fullWidth: true),
+                SizedBox(height: 24.h),
+
+                // 📊 Pie Chart Section
+                Text(
+                  'Top 3 Watched Genres',
+                  style: TextStyle(fontSize: 18.sp, color: Colors.grey[300]),
+                ),
+                SizedBox(height: 16.h),
+                PieChart(
+                  dataMap: topWatchedGenresMap,
+                  colorList: topGenreColors,
+                  chartType: ChartType.ring,
+                  ringStrokeWidth: 10,
+                  chartRadius: 150.w,
+                  chartValuesOptions: const ChartValuesOptions(
+                    showChartValuesInPercentage: true,
+                    showChartValues: true,
+                    chartValueStyle: TextStyle(color: Colors.black),
+                  ),
+                  legendOptions: const LegendOptions(showLegends: false),
+                ),
+                SizedBox(height: 20.h),
+
+                // 🎯 Custom Legend
+                Wrap(
+                  spacing: 20.w,
+                  runSpacing: 10.h,
+                  children: [
+                    _buildLegendDot('Action', Colors.red),
+                    _buildLegendDot('Comedy', Colors.green),
+                    _buildLegendDot('Thriller', Colors.cyan),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // ➕ Floating Action Button
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.pushNamed(context, RouteName.addMovieScreen);
+          },
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.add, size: 30, color: Colors.white),
+          label: const Text(
+            'Add Movies',
+            style: TextStyle(color: Colors.white, fontSize: 16),
           ),
         ),
       ),

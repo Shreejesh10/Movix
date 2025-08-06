@@ -6,6 +6,7 @@ import 'package:recommender/features/dashboard/admin_dashboard.dart';
 import 'package:recommender/features/dashboard/home.dart';
 import 'package:recommender/features/dashboard/user_dashboard.dart';
 import 'package:recommender/features/dashboard/user_profile.dart';
+import 'package:recommender/models/addMovie.dart';
 import 'package:recommender/models/lists.dart';
 import 'package:recommender/models/movie_details.dart';
 import 'package:recommender/models/onboarding_screen.dart';
@@ -42,6 +43,8 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => const MovieDetailsScreen());
       case RouteName.adminDashboard:
         return MaterialPageRoute(builder: (_) => const AdminDashboard());
+      case RouteName.addMovieScreen:
+        return MaterialPageRoute(builder:  (_) => const AddMovieScreen());
 
       default:
         return _errorRoute();
