@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "841286202403",
+    "project_id": "movie-organiser",
+    "storage_bucket": "movie-organiser.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841286202403:android:d3fb7d00634bb3f17d2d96",
+        "android_client_info": {
+          "package_name": "com.example.recommender"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "841286202403-c54ctlaju2rr1pg83184mv4dmm1er5pj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcWOZqCYw0sXEnQI_kH0b4DpfgAKho4wE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "841286202403-c54ctlaju2rr1pg83184mv4dmm1er5pj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,8 +2,10 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:recommender/common_widgets/custom_app_bar.dart';
 import 'package:recommender/models/onboarding_screen.dart';
+import 'package:recommender/theme/theme_provider.dart';
 import '../../core/route_config/route_names.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -72,6 +74,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           }),
 
           _editProfileButton("Light Mode", CupertinoIcons.moon, () {
+            Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
           }),
 
           //LogOut Button

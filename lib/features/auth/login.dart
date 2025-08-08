@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:recommender/core/route_config/route_names.dart';
+import 'package:recommender/features/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -164,7 +166,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 15.h),
 
                     GestureDetector(
-                      onTap: () => print("Google Sign-In tapped"),
+                      onTap: () async {
+                        UserCredential? userCredential = await AuthService().signInWithGoogle();
+
+                        if (userCredential != null) {
+                          print("Signed in as ${userCredential.user?.displayName}");
+                          Navigator.pushNamed(context, RouteName.homeScreen);
+                        } else {
+                          // Show SnackBar on error
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Google Sign-In cancelled or failed. Please try again.'),
+                              backgroundColor: Colors.redAccent,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      },
+
+
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                         decoration: BoxDecoration(
