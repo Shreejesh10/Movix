@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../core/route_config/route_names.dart';
+import '../services/auth_service.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -130,7 +132,25 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 SizedBox(height: 15.h),
                 GestureDetector(
-                  onTap: () => print("Google Sign-In tapped"),
+                  onTap: () async {
+                    UserCredential? userCredential = await AuthService().signInWithGoogle();
+
+                    if (userCredential != null) {
+                      print("Signed in as ${userCredential.user?.displayName}");
+                      Navigator.pushNamed(context, RouteName.homeScreen);
+                    } else {
+                      // Show SnackBar on error
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Google Sign-In cancelled or failed. Please try again.'),
+                          backgroundColor: Colors.redAccent,
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    }
+                  },
+
+
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 12.h),
                     decoration: BoxDecoration(
@@ -149,7 +169,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         SizedBox(width: 10.w),
-                        Icon(Icons.g_translate, color: Colors.black, size: 25.sp),
+                        Icon(
+                          Icons.g_translate,
+                          color: Colors.black,
+                          size: 25.sp,
+                        ),
                       ],
                     ),
                   ),
@@ -165,6 +189,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     TextButton(
                       onPressed: () {
+
                         Navigator.pushNamed(context, AuthRouteName.loginScreen);
                       },
                       child: Text(
