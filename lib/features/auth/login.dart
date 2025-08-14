@@ -28,17 +28,54 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _submit() {
+  void _submit() async {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
 
-      if (email == 'admin@gmail.com') {
-        Navigator.pushNamed(context, RouteName.adminDashboard);
-      } else {
-        Navigator.pushNamed(context, RouteName.homeScreen);
+      try {
+        // Attempt sign in
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        // Navigate based on email
+        if (email == 'admin@gmail.com') {
+          Navigator.pushNamed(context, RouteName.adminDashboard);
+        } else {
+          Navigator.pushNamed(context, RouteName.homeScreen);
+        }
+      } on FirebaseAuthException catch (e) {
+        String message;
+
+        if (e.code == 'user-not-found') {
+          message = 'No account found for that email.';
+        } else if (e.code == 'wrong-password') {
+          message = 'Incorrect password.';
+        } else if (e.code == 'invalid-email') {
+          message = 'Invalid email address.';
+        } else {
+          message = 'Login failed. ${e.message}';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An unexpected error occurred.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
       }
     } else {
+      // Handle input errors
       if (_emailController.text.isEmpty ||
           !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
               .hasMatch(_emailController.text.trim())) {
@@ -48,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
+
 
 
   @override

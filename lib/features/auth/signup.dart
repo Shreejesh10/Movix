@@ -32,7 +32,6 @@ class _SignupScreenState extends State<SignupScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
                 SizedBox(height: 12.h),
 
                 Text(
@@ -60,13 +59,61 @@ class _SignupScreenState extends State<SignupScreen> {
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         FocusScope.of(context).unfocus();
                         if (_formKey.currentState!.validate()) {
-                          // Proceed with signup
-                          Navigator.pushNamed(context, RouteName.onboardingScreen);
+                          final email = _emailController.text.trim();
+                          final password = _passwordController.text.trim();
+
+                          try {
+                            UserCredential userCredential = await FirebaseAuth
+                                .instance
+                                .createUserWithEmailAndPassword(
+                                  email: email,
+                                  password: password,
+                                );
+
+                            // Optionally store display name (username)
+                            await userCredential.user?.updateDisplayName(
+                              _usernameController.text.trim(),
+                            );
+
+                            // Navigate to next screen
+                            Navigator.pushNamed(
+                              context,
+                              RouteName.onboardingScreen,
+                            );
+                          } on FirebaseAuthException catch (e) {
+                            String message;
+                            if (e.code == 'email-already-in-use') {
+                              message = 'This email is already registered.';
+                            } else if (e.code == 'invalid-email') {
+                              message = 'Invalid email address.';
+                            } else if (e.code == 'weak-password') {
+                              message = 'The password is too weak.';
+                            } else {
+                              message = 'Signup failed. ${e.message}';
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(message),
+                                backgroundColor: Colors.redAccent,
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          } catch (e) {
+                            // Catch any other errors
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('An unexpected error occurred.'),
+                                backgroundColor: Colors.redAccent,
+                              ),
+                            );
+                          }
                         }
                       },
+
                       child: Text(
                         'Sign Up',
                         style: TextStyle(color: Colors.white, fontSize: 20.sp),
@@ -79,10 +126,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Forgot password?',
-                      style: TextStyle(fontSize: 15.sp),
-                    ),
+                    Text('Forgot password?', style: TextStyle(fontSize: 15.sp)),
                     TextButton(
                       onPressed: () {},
                       child: Text(
@@ -114,10 +158,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.grey, width: 2),
                       ),
-                      child: Text(
-                        'Or',
-                        style: TextStyle(fontSize: 14.sp),
-                      ),
+                      child: Text('Or', style: TextStyle(fontSize: 14.sp)),
                     ),
                     Expanded(
                       child: Divider(
@@ -133,7 +174,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: 15.h),
                 GestureDetector(
                   onTap: () async {
-                    UserCredential? userCredential = await AuthService().signInWithGoogle();
+                    UserCredential? userCredential = await AuthService()
+                        .signInWithGoogle();
 
                     if (userCredential != null) {
                       print("Signed in as ${userCredential.user?.displayName}");
@@ -142,14 +184,15 @@ class _SignupScreenState extends State<SignupScreen> {
                       // Show SnackBar on error
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Google Sign-In cancelled or failed. Please try again.'),
+                          content: Text(
+                            'Google Sign-In cancelled or failed. Please try again.',
+                          ),
                           backgroundColor: Colors.redAccent,
                           duration: Duration(seconds: 3),
                         ),
                       );
                     }
                   },
-
 
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -189,7 +232,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-
                         Navigator.pushNamed(context, AuthRouteName.loginScreen);
                       },
                       child: Text(
@@ -212,11 +254,11 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _field(
-      TextEditingController controller,
-      String hintText, {
-        bool isPassword = false,
-        IconData? icon,
-      }) {
+    TextEditingController controller,
+    String hintText, {
+    bool isPassword = false,
+    IconData? icon,
+  }) {
     return StatefulBuilder(
       builder: (context, setState) {
         return Padding(
@@ -230,7 +272,10 @@ class _SignupScreenState extends State<SignupScreen> {
               hintStyle: TextStyle(color: Colors.grey[600]),
               filled: true,
               fillColor: const Color.fromRGBO(30, 30, 30, 1),
-              contentPadding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 18.h,
+                horizontal: 16.w,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
                 borderSide: BorderSide(color: Colors.grey.shade700),
@@ -245,16 +290,18 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               suffixIcon: isPassword
                   ? IconButton(
-                icon: Icon(
-                  _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey[500],
-                ),
-                onPressed: () {
-                  setState(() {
-                    _isPasswordVisible = !_isPasswordVisible;
-                  });
-                },
-              )
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey[500],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                    )
                   : Icon(icon, color: Colors.grey[500]),
             ),
             validator: (value) {
@@ -267,8 +314,9 @@ class _SignupScreenState extends State<SignupScreen> {
               }
 
               if (hintText == 'Email Address' &&
-                  !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
-                      .hasMatch(value.trim())) {
+                  !RegExp(
+                    r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$',
+                  ).hasMatch(value.trim())) {
                 return 'Enter a valid email address';
               }
 

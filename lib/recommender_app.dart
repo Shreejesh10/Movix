@@ -88,7 +88,7 @@ class RecommenderApp extends StatelessWidget {
 
                     darkTheme:  ThemeData(
                       fontFamily: 'Poppins',
-                      scaffoldBackgroundColor: Colors.grey[900],
+                      scaffoldBackgroundColor: Colors.white,
                       colorScheme: const ColorScheme.dark(
                         secondary: Color(0xFF262626),
                       ),
