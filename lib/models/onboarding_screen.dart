@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../core/route_config/route_names.dart';
+import 'package:recommender/constants.dart';
 
 class GenreSelectionScreen extends StatefulWidget {
   final bool fromSettings;
@@ -12,11 +13,7 @@ class GenreSelectionScreen extends StatefulWidget {
 }
 
 class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
-  final List<String> genres = [
-    'Action', 'Adventure', 'Drama', 'Comedy',
-    'Crime', 'Documentary', 'Sports', 'Fantasy',
-    'Horror', 'Music', 'Western', 'Thriller', 'Sci-fi'
-  ];
+  final List<String> genres = GENRES;
 
   final Set<String> selectedGenres = {};
 

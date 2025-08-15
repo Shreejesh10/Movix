@@ -4,6 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../core/route_config/route_names.dart';
 import '../services/auth_service.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:recommender/constants.dart';
+import 'dart:developer';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -77,6 +81,37 @@ class _SignupScreenState extends State<SignupScreen> {
                             await userCredential.user?.updateDisplayName(
                               _usernameController.text.trim(),
                             );
+
+                            //Passing user UID to fastAPI backend
+                            if((userCredential.user?.uid??'').isNotEmpty){
+                              final uid = userCredential.user!.uid;
+                              final userName = _usernameController.text.trim();
+                              final email = userCredential.user!.email ?? '';
+                              final signUpMethod = 'EmailAndPassword'; // Or whatever method you use
+
+                              final url = Uri.parse('$API_URL/user/add_user_data');
+
+                              final body = jsonEncode({
+                                "firebase_user_id": uid,
+                                "user_name": userName,
+                                "email": email,
+                                "sign_up_method": signUpMethod
+                              });
+
+                              log("Making request to url: $url");
+
+                              final response = await http.post(
+                                url,
+                                headers: {"Content-Type": "application/json"},
+                                body: body,
+                              );
+
+                              if (response.statusCode == 200) {
+                                log("User data sent successfully: ${response.body}");
+                              } else {
+                                log("Failed to send user data: ${response.statusCode} ${response.body}");
+                              }
+                            }
 
                             // Navigate to next screen
                             Navigator.pushNamed(
