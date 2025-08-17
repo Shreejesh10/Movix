@@ -6,12 +6,12 @@ import 'package:recommender/features/dashboard/admin_dashboard.dart';
 import 'package:recommender/features/dashboard/home.dart';
 import 'package:recommender/features/dashboard/user_dashboard.dart';
 import 'package:recommender/features/dashboard/user_profile.dart';
-import 'package:recommender/models/addMovie.dart';
-import 'package:recommender/models/lists.dart';
-import 'package:recommender/models/movie_details.dart';
-import 'package:recommender/models/onboarding_screen.dart';
-import 'package:recommender/models/splash_screen.dart';
-import 'package:recommender/models/viewall.dart';
+import 'package:recommender/screens/addMovie.dart';
+import 'package:recommender/screens/lists.dart';
+import 'package:recommender/screens/movie_details.dart';
+import 'package:recommender/screens/onboarding_screen.dart';
+import 'package:recommender/screens/splash_screen.dart';
+import 'package:recommender/screens/viewall.dart';
 
 class RouteConfig {
   RouteConfig._();

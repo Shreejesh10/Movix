@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:recommender/core/route_config/route_names.dart';
 import 'package:recommender/features/services/auth_service.dart';
+import 'package:recommender/features/services/cache_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -46,6 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushNamed(context, RouteName.adminDashboard);
         } else {
           Navigator.pushNamed(context, RouteName.homeScreen);
+        }
+
+        String? firebaseUid = FirebaseAuth.instance.currentUser?.uid;
+        if(firebaseUid != null) {
+          CacheService.setValue('currentUserId', firebaseUid);
         }
       } on FirebaseAuthException catch (e) {
         String message;

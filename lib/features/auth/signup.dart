@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:recommender/features/services/cache_service.dart';
 
 import '../../core/route_config/route_names.dart';
 import '../services/auth_service.dart';
@@ -82,9 +83,13 @@ class _SignupScreenState extends State<SignupScreen> {
                               _usernameController.text.trim(),
                             );
 
+                            String? uid = userCredential.user?.uid;
+                            if(uid != null) {
+                              CacheService.setValue('currentUserId', uid);
+                            }
+
                             //Passing user UID to fastAPI backend
-                            if((userCredential.user?.uid??'').isNotEmpty){
-                              final uid = userCredential.user!.uid;
+                            if((uid??'').isNotEmpty){
                               final userName = _usernameController.text.trim();
                               final email = userCredential.user!.email ?? '';
                               final signUpMethod = 'EmailAndPassword'; // Or whatever method you use

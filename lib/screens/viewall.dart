@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:recommender/models/movie.dart';
+import 'package:recommender/features/services/cache_service.dart';
+import 'package:recommender/api/api.dart';
+import 'dart:developer';
 
 import '../common_widgets/edit_movie_status.dart';
 
@@ -11,6 +15,78 @@ class ViewallScreen extends StatefulWidget {
 }
 
 class _ViewallScreenState extends State<ViewallScreen> {
+  List<Movie> recommendedMovies = [];
+  List<Movie> popularMovies = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadMovies();
+  }
+
+  void _loadMovies() async {
+    print("Entered load movies");
+
+    String? userId = getUserId();
+
+    dynamic cachedUidValue = await CacheService.getValue("currentUserUid");
+    String? cachedUid = cachedUidValue?.toString();
+
+    dynamic cachedRecommendedValue = await CacheService.getValue("recommendedMovies");
+    dynamic cachedPopularValue = await CacheService.getValue("popularMovies");
+
+    dynamic cachedLastFetchedTimeValue = await CacheService.getValue("lastMoviesFetchedTime");
+    Duration diff = Duration(minutes: 10);
+
+    if (cachedLastFetchedTimeValue != null) {
+      try {
+        diff = DateTime.now().difference(DateTime.parse(cachedLastFetchedTimeValue.toString()));
+      } catch (e) {
+        log("Failed to parse last fetched time: $e");
+        diff = Duration(minutes: 10);
+      }
+    }
+
+    // Only call API if cache is invalid
+    if (userId != cachedUid || cachedRecommendedValue == null || cachedPopularValue == null || diff.inMinutes > 5) {
+      print("Loading from api");
+      final recommended = await getRecommendedMovies();
+      final popular = await getPopularMovies();
+
+      setState(() {
+        recommendedMovies = recommended;
+        popularMovies = popular;
+      });
+
+      await CacheService.setValue("lastMoviesFetchedTime", DateTime.now().toIso8601String());
+
+    } else {
+      print("Loading from cache");
+      print(cachedLastFetchedTimeValue);
+
+      List<Movie> cachedRecommendedMovies = [];
+      List<Movie> cachedPopularMovies = [];
+
+      if (cachedRecommendedValue is List) {
+        cachedRecommendedMovies = cachedRecommendedValue
+            .map((item) => Movie.fromJson(Map<String, dynamic>.from(item)))
+            .toList();
+      }
+
+      if (cachedPopularValue is List) {
+        cachedPopularMovies = cachedPopularValue
+            .map((item) => Movie.fromJson(Map<String, dynamic>.from(item)))
+            .toList();
+      }
+
+      setState(() {
+        recommendedMovies = cachedRecommendedMovies;
+        popularMovies = cachedPopularMovies;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,69 +106,15 @@ class _ViewallScreenState extends State<ViewallScreen> {
           child: Column(
             children: [
               SizedBox(height: 18.h),
-              _movielist(
-                'assets/images/Movie Poster/Pulp Fiction.png',
-                'Pulp Fiction',
-                'Crime/Drama',
-                '1994',
-                '8.9',
-              ),
-              _movielist(
-                'assets/images/Movie Poster/ted.png',
-                'Ted',
-                'Comedy/Fantasy',
-                '2012',
-                '6.9',
-              ),
-              _movielist(
-                'assets/images/Movie Poster/romeo.png',
-                'Romeo + Juliet',
-                'Drama/Romance',
-                '1996',
-                '6.8',
-              ),
-              _movielist(
-                'assets/images/Movie Poster/Forestgump.jpg',
-                'Forrest Gump',
-                'Drama/Romance',
-                '1994',
-                '8.8',
-              ),
-              _movielist(
-                'assets/images/Movie Poster/F1.jpg',
-                'F1',
-                'Action/Sport',
-                '2025',
-                '8.5',
-              ),
-              _movielist(
-                'assets/images/Movie Poster/SpiderMan.png',
-                'Spider-Man: Into the Spider-Verse',
-                'Animation/Action',
-                '2018',
-                '8.4',
-              ),
-              _movielist(
-                'assets/images/Movie Poster/great gatsby.png',
-                'The Great Gatsby',
-                'Drama/Romance',
-                '2013',
-                '7.2',
-              ),
-              _movielist(
-                'assets/images/Movie Poster/pandorum.jpg',
-                'Pandorum',
-                'Horror/Sci-fi',
-                '2009',
-                '6.7',
-              ),
-              _movielist(
-                'assets/images/Movie Poster/Shawshank.jpg',
-                'The Shawshank Redemption',
-                'Drama/Prison',
-                '1994',
-                '9.3',
-              ),
+              ...recommendedMovies.map((movie) {
+                return _movielist(
+                    'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                    movie.title??'',
+                    (movie.genres??[]).join('/'),
+                    movie.releaseDate??''.split('-')[0],
+                    movie.voteAverage?.toStringAsFixed(2) ?? '-'
+                );
+              }),
             ],
           ),
 
@@ -128,7 +150,7 @@ class _ViewallScreenState extends State<ViewallScreen> {
                 child: SizedBox(
                   height: 120.h,
                   width: 90.w,
-                  child: Image.asset(imagePath, fit: BoxFit.cover),
+                  child: Image.network(imagePath, fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -153,6 +175,8 @@ class _ViewallScreenState extends State<ViewallScreen> {
                     SizedBox(height: 4.h),
                     Text(
                       genre,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                     ),
                     SizedBox(height: 2.h),

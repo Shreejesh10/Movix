@@ -6,6 +6,10 @@ import 'package:recommender/common_widgets/custom_app_bar.dart';
 import 'package:recommender/common_widgets/genre_selection.dart';
 import 'package:recommender/core/route_config/route_names.dart';
 import '../../common_widgets/custom_search_bar.dart';
+import 'package:recommender/models/allModels.dart';
+import 'package:recommender/features/services/cache_service.dart';
+import 'package:recommender/api/api.dart';
+import 'dart:developer';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +20,77 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
+  List<Movie> recommendedMovies = [];
+  List<Movie> popularMovies = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadMovies();
+  }
+
+  void _loadMovies() async {
+    print("Entered load movies");
+
+    String? userId = getUserId();
+
+    dynamic cachedUidValue = await CacheService.getValue("currentUserUid");
+    String? cachedUid = cachedUidValue?.toString();
+
+    dynamic cachedRecommendedValue = await CacheService.getValue("recommendedMovies");
+    dynamic cachedPopularValue = await CacheService.getValue("popularMovies");
+
+    dynamic cachedLastFetchedTimeValue = await CacheService.getValue("lastMoviesFetchedTime");
+    Duration diff = Duration(minutes: 10);
+
+    if (cachedLastFetchedTimeValue != null) {
+      try {
+        diff = DateTime.now().difference(DateTime.parse(cachedLastFetchedTimeValue.toString()));
+      } catch (e) {
+        log("Failed to parse last fetched time: $e");
+        diff = Duration(minutes: 10);
+      }
+    }
+
+    // Only call API if cache is invalid
+    if (userId != cachedUid || cachedRecommendedValue == null || cachedPopularValue == null || diff.inMinutes > 5) {
+      print("Loading from api");
+      final recommended = await getRecommendedMovies();
+      final popular = await getPopularMovies();
+
+      setState(() {
+        recommendedMovies = recommended;
+        popularMovies = popular;
+      });
+
+      await CacheService.setValue("lastMoviesFetchedTime", DateTime.now().toIso8601String());
+
+    } else {
+      print("Loading from cache");
+      print(cachedLastFetchedTimeValue);
+
+      List<Movie> cachedRecommendedMovies = [];
+      List<Movie> cachedPopularMovies = [];
+
+      if (cachedRecommendedValue is List) {
+        cachedRecommendedMovies = cachedRecommendedValue
+            .map((item) => Movie.fromJson(Map<String, dynamic>.from(item)))
+            .toList();
+      }
+
+      if (cachedPopularValue is List) {
+        cachedPopularMovies = cachedPopularValue
+            .map((item) => Movie.fromJson(Map<String, dynamic>.from(item)))
+            .toList();
+      }
+
+      setState(() {
+        recommendedMovies = cachedRecommendedMovies;
+        popularMovies = cachedPopularMovies;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,54 +146,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(left: 15.w),
                 child: Row(
                   children: [
-                    _movieList(
-                      'assets/images/Movie Poster/F1.jpg',
-                      'F1',
-                      'Action/Sport',
-                      '8.5',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/SpiderMan.png',
-                      'Spider-Man: Into the Spider-Verse',
-                      'Animation/Action',
-                      '8.4',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/Pulp Fiction.png',
-                      'Pulp Fiction',
-                      'Crime/Drama',
-                      '8.9',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/Forestgump.jpg',
-                      'Forrest Gump',
-                      'Drama/Romance',
-                      '8.8',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/pandorum.jpg',
-                      'Pandorum',
-                      'Horror/Sci-fi',
-                      '6.7',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/Shawshank.jpg',
-                      'The Shawshank Redemption',
-                      'Drama/Prison',
-                      '9.3',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/ted.png',
-                      'Ted',
-                      'Comedy/Fantasy',
-                      '6.9',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/romeo.png',
-                      'Romeo + Juliet',
-                      'Drama/Romance',
-                      '6.8',
-                    ),
+                    ...recommendedMovies.map((movie) {
+                      return _movieList(
+                          'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                          movie.title??'',
+                          (movie.genres??[]).join('/'),
+                          movie.voteAverage?.toStringAsFixed(2) ?? '-'
+                      );
+                    })
                   ],
                 ),
               ),
@@ -126,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Being Watched section
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                child: _content('Being Watched Right Now'),
+                child: _content('Popular Right Now'),
               ),
 
               SingleChildScrollView(
@@ -134,48 +169,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.only(left: 15.w),
                 child: Row(
                   children: [
-                    _movieList(
-                      'assets/images/Movie Poster/romeo.png',
-                      'Romeo + Juliet',
-                      'Drama/Romance',
-                      '6.8',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/Pulp Fiction.png',
-                      'Pulp Fiction',
-                      'Crime/Drama',
-                      '8.9',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/pandorum.jpg',
-                      'Pandorum',
-                      'Horror/Sci-fi',
-                      '6.7',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/Forestgump.jpg',
-                      'Forrest Gump',
-                      'Drama/Romance',
-                      '8.8',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/SpiderMan.png',
-                      'Spider-Man: Into the Spider-Verse',
-                      'Animation/Action',
-                      '8.4',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/F1.jpg',
-                      'F1',
-                      'Action/Sport',
-                      '8.5',
-                    ),
-                    _movieList(
-                      'assets/images/Movie Poster/Shawshank.jpg',
-                      'The Shawshank Redemption',
-                      'Drama/Prison',
-                      '9.3',
-                    ),
+                    ...popularMovies.map((movie) {
+                      return _movieList(
+                          'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                          movie.title??'',
+                          (movie.genres??[]).join('/'),
+                          movie.voteAverage?.toStringAsFixed(2) ?? '-'
+                      );
+                    })
                   ],
                 ),
               ),
@@ -267,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 width: double.infinity,
                 height: 180.h,
-                child: Image.asset(imagePath, fit: BoxFit.cover),
+                child: Image.network(imagePath, fit: BoxFit.cover),
               ),
             ),
             SizedBox(height: 8.h),
@@ -288,6 +289,8 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.only(left: 8.w, right: 4.w),
               child: Text(
                 genre,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 14.sp, color: Colors.grey),
               ),
             ),

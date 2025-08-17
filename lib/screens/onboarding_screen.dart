@@ -3,6 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../core/route_config/route_names.dart';
 import 'package:recommender/constants.dart';
+import 'package:recommender/models/genre.dart';
+import 'package:recommender/api/api.dart';
+import 'package:collection/collection.dart';
+import 'package:recommender/features/services/cache_service.dart';
 
 class GenreSelectionScreen extends StatefulWidget {
   final bool fromSettings;
@@ -13,9 +17,31 @@ class GenreSelectionScreen extends StatefulWidget {
 }
 
 class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
-  final List<String> genres = GENRES;
+  final List<Genre> genres = GENRES;
+  List<Genre> selectedGenres = [];
+  List<Genre> initialPreferences = [];
+  bool changedPreferences = false;
 
-  final Set<String> selectedGenres = {};
+  @override
+  void initState() {
+    super.initState();
+    _loadUserPreferences();
+  }
+
+  Future<void> _loadUserPreferences() async {
+    final prefs = await getCurrentUserPreferences(); // your async function
+    setState(() {
+      selectedGenres = prefs;
+      initialPreferences = List<Genre>.from(prefs);
+    });
+  }
+
+  //Checking if preference actually changed to validate before calling the API
+  bool _preferencesChanged() {
+    final selectedIds = selectedGenres.map((g) => g.id).toSet();
+    final initialIds = initialPreferences.map((g) => g.id).toSet();
+    return !const SetEquality().equals(selectedIds, initialIds);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,13 +108,17 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                       spacing: 10.w,
                       runSpacing: 12.h,
                       children: genres.map((genre) {
-                        final isSelected = selectedGenres.contains(genre);
+                        final isSelected = selectedGenres.any((g) => g.id == genre.id);
                         return GestureDetector(
                           onTap: () {
                             setState(() {
-                              isSelected
-                                  ? selectedGenres.remove(genre)
-                                  : selectedGenres.add(genre);
+                              if (isSelected) {
+                                selectedGenres.removeWhere((g) => g.id == genre.id);
+                              } else {
+                                selectedGenres.add(genre);
+                              }
+
+                              changedPreferences = _preferencesChanged();
                             });
                           },
                           child: Container(
@@ -102,7 +132,7 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                               border: Border.all(color: Colors.white30),
                             ),
                             child: Text(
-                              genre,
+                              genre.name,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14.sp,
@@ -134,7 +164,19 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async{
+                            if(changedPreferences){
+                              String result = await updateUserPreferences(selectedGenres);
+                              setState(() {
+                                changedPreferences = false; // reset after saving
+                                initialPreferences = List.from(selectedGenres); // update baseline
+                              });
+
+                              //removing caches
+                              CacheService.remove('recommendedMovies');
+                              CacheService.remove('popularMovies');
+                            }
+
                             if(!widget.fromSettings){
                               Navigator.pushNamed(context, RouteName.homeScreen);
                             }
