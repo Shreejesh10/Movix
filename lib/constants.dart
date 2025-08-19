@@ -1,12 +1,28 @@
-import 'package:recommender/models/genre.dart';
+import 'package:Movix/models/genre.dart';
 
-const String API_URL = "http://10.0.2.2:8000"; //IP Address of the running device (this laptop) for the emulators
+const String API_URL =
+    "http://10.0.2.2:8000"; //IP Address of the running device (this laptop) for the emulators
 
 const List<String> GENRES_NAME_ONLY = [
-  'Action', 'Adventure', 'Animation', 'Comedy',
-  'Crime', 'Documentary', 'Drama', 'Family',
-  'Fantasy', 'War','History', 'Horror', 'Music', 'Mystery',
-  'Romance', 'Science Fiction', 'Thriller','TV Movie', 'Western'
+  'Action',
+  'Adventure',
+  'Animation',
+  'Comedy',
+  'Crime',
+  'Documentary',
+  'Drama',
+  'Family',
+  'Fantasy',
+  'War',
+  'History',
+  'Horror',
+  'Music',
+  'Mystery',
+  'Romance',
+  'Science Fiction',
+  'Thriller',
+  'TV Movie',
+  'Western',
 ];
 
 final List<Genre> GENRES = [

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:recommender/core/route_config/route_names.dart';
+import 'package:Movix/core/route_config/route_names.dart';
 import 'package:provider/provider.dart';
-import 'package:recommender/theme/theme_provider.dart';
+import 'package:Movix/theme/theme_provider.dart';
 import 'core/route_config/route_config.dart';
 
 void main() async {
@@ -29,13 +29,12 @@ class RecommenderApp extends StatelessWidget {
                   ThemeProvider themeProvider,
                   Widget? child,
                 ) {
-
                   return MaterialApp(
                     debugShowCheckedModeBanner: false,
                     title: 'My Movie List',
                     themeMode: themeProvider.isDarkMode
-                        ?ThemeMode.dark
-                        :ThemeMode.light,
+                        ? ThemeMode.dark
+                        : ThemeMode.light,
                     theme: ThemeData(
                       fontFamily: 'Poppins',
                       scaffoldBackgroundColor: Color.fromRGBO(35, 35, 35, 1.0),
@@ -86,7 +85,7 @@ class RecommenderApp extends StatelessWidget {
                       hoverColor: Colors.transparent,
                     ),
 
-                    darkTheme:  ThemeData(
+                    darkTheme: ThemeData(
                       fontFamily: 'Poppins',
                       scaffoldBackgroundColor: Colors.white,
                       colorScheme: const ColorScheme.dark(

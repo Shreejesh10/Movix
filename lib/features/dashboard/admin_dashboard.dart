@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'package:recommender/common_widgets/custom_app_bar.dart';
-import 'package:recommender/core/route_config/route_names.dart';
+import 'package:Movix/common_widgets/custom_app_bar.dart';
+import 'package:Movix/core/route_config/route_names.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -33,11 +33,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
           automaticallyImplyLeading: false,
           title: Text(
             "Admin Dashboard",
-            style: TextStyle( color: Colors.grey,fontSize: 25.sp),
+            style: TextStyle(color: Colors.grey, fontSize: 25.sp),
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.exit_to_app, color: Colors.grey, size: 30,),
+              icon: const Icon(Icons.exit_to_app, color: Colors.grey, size: 30),
               onPressed: () {
                 Navigator.pushNamed(context, AuthRouteName.loginScreen);
               },
@@ -182,18 +182,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
         Container(
           width: 12.w,
           height: 12.w,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
         SizedBox(width: 6.w),
         Text(
           title,
-          style: TextStyle(
-            color: Colors.grey[300],
-            fontSize: 12.sp,
-          ),
+          style: TextStyle(color: Colors.grey[300], fontSize: 12.sp),
         ),
       ],
     );

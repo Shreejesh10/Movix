@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:recommender/core/route_config/route_names.dart';
-import 'package:recommender/features/services/auth_service.dart';
-import 'package:recommender/features/services/cache_service.dart';
+import 'package:Movix/core/route_config/route_names.dart';
+import 'package:Movix/features/services/auth_service.dart';
+import 'package:Movix/features/services/cache_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -70,10 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: Colors.redAccent,
-          ),
+          SnackBar(content: Text(message), backgroundColor: Colors.redAccent),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -89,16 +86,15 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       if (_emailController.text.isEmpty ||
-          !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
-              .hasMatch(_emailController.text.trim())) {
+          !RegExp(
+            r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$',
+          ).hasMatch(_emailController.text.trim())) {
         _emailFocus.requestFocus();
       } else {
         _passwordFocus.requestFocus();
       }
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -169,21 +165,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: _isLoading
                             ? SizedBox(
-                          width: 24.w,
-                          height: 24.w,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
+                                width: 24.w,
+                                height: 24.w,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
                             : Text(
-                          'Sign in',
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                                'Sign in',
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                       ),
                     ),
 
@@ -227,23 +225,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     GestureDetector(
                       onTap: () async {
-                        UserCredential? userCredential = await AuthService().signInWithGoogle();
+                        UserCredential? userCredential = await AuthService()
+                            .signInWithGoogle();
 
                         if (userCredential != null) {
-                          print("Signed in as ${userCredential.user?.displayName}");
+                          print(
+                            "Signed in as ${userCredential.user?.displayName}",
+                          );
                           Navigator.pushNamed(context, RouteName.homeScreen);
                         } else {
                           // Show SnackBar on error
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Google Sign-In cancelled or failed. Please try again.'),
+                              content: Text(
+                                'Google Sign-In cancelled or failed. Please try again.',
+                              ),
                               backgroundColor: Colors.redAccent,
                               duration: Duration(seconds: 3),
                             ),
                           );
                         }
                       },
-
 
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12.h),

@@ -1,22 +1,18 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:recommender/common_widgets/custom_search_bar.dart';
-import 'package:recommender/common_widgets/edit_movie_status.dart';
-import 'package:recommender/common_widgets/genre_selection.dart';
+import 'package:Movix/common_widgets/custom_search_bar.dart';
+import 'package:Movix/common_widgets/edit_movie_status.dart';
+import 'package:Movix/common_widgets/genre_selection.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../core/route_config/route_names.dart';
 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
 
-
   @override
   State<UserListScreen> createState() => _UserListScreenState();
-
-
 }
-
 
 class _UserListScreenState extends State<UserListScreen> {
   int index = 1;
@@ -74,11 +70,7 @@ class _UserListScreenState extends State<UserListScreen> {
       appBar: const CustomAppBar(title: 'List'),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(
-            left: 15.w,
-            right: 15.w,
-            bottom: 55.h,
-          ),
+          padding: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 55.h),
           child: Column(
             children: [
               const SearchFilterBar(),
@@ -178,7 +170,6 @@ class _UserListScreenState extends State<UserListScreen> {
                 1,
                 1,
               ),
-
             ],
           ),
         ),
@@ -188,7 +179,11 @@ class _UserListScreenState extends State<UserListScreen> {
         backgroundColor: Colors.red,
 
         shape: CircleBorder(),
-        child: Icon(Icons.arrow_upward_outlined, color: Colors.white,size: 30.sp,),
+        child: Icon(
+          Icons.arrow_upward_outlined,
+          color: Colors.white,
+          size: 30.sp,
+        ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 65.h,
@@ -218,14 +213,16 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 
-  Widget _movielist(String imagePath,
-      String title,
-      String genre,
-      String releaseDate,
-      String imdb,
-      double progress,
-      int currentEp,
-      int totalEp,) {
+  Widget _movielist(
+    String imagePath,
+    String title,
+    String genre,
+    String releaseDate,
+    String imdb,
+    double progress,
+    int currentEp,
+    int totalEp,
+  ) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.w),
       height: 135.h,
@@ -319,7 +316,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                 builder: (context, constraints) {
                                   final width =
                                       constraints.maxWidth *
-                                          progress.clamp(0.0, 1.0);
+                                      progress.clamp(0.0, 1.0);
                                   return Container(
                                     width: width,
                                     height: 8.h,
@@ -394,13 +391,18 @@ class _UserListScreenState extends State<UserListScreen> {
                     value: selectedStatus,
                     isExpanded: true,
                     dropdownColor: Colors.grey[900],
-                    items: ['Currently Watching', 'Completed', 'On hold', 'Plan to watch']
-                        .map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
+                    items:
+                        [
+                          'Currently Watching',
+                          'Completed',
+                          'On hold',
+                          'Plan to watch',
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                     onChanged: (newValue) {
                       setState(() {
                         selectedStatus = newValue!;
@@ -414,7 +416,10 @@ class _UserListScreenState extends State<UserListScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(); // Cancel
                   },
-                  child: const Text('Cancel', style: TextStyle(color: Colors.white),),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -424,9 +429,11 @@ class _UserListScreenState extends State<UserListScreen> {
                   onPressed: () {
                     print("Selected status: $selectedStatus");
                     Navigator.of(context).pop(); // Save
-
                   },
-                  child: const Text('Save', style: TextStyle(color: Colors.white, fontSize:18),),
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                 ),
               ],
             );
@@ -435,7 +442,4 @@ class _UserListScreenState extends State<UserListScreen> {
       },
     );
   }
-
-
-
 }

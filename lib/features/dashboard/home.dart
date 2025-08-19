@@ -2,13 +2,13 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:recommender/common_widgets/custom_app_bar.dart';
-import 'package:recommender/common_widgets/genre_selection.dart';
-import 'package:recommender/core/route_config/route_names.dart';
+import 'package:Movix/common_widgets/custom_app_bar.dart';
+import 'package:Movix/common_widgets/genre_selection.dart';
+import 'package:Movix/core/route_config/route_names.dart';
 import '../../common_widgets/custom_search_bar.dart';
-import 'package:recommender/models/allModels.dart';
-import 'package:recommender/features/services/cache_service.dart';
-import 'package:recommender/api/api.dart';
+import 'package:Movix/models/allModels.dart';
+import 'package:Movix/features/services/cache_service.dart';
+import 'package:Movix/api/api.dart';
 import 'dart:developer';
 
 class HomeScreen extends StatefulWidget {
@@ -18,7 +18,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   int index = 0;
   List<Movie> recommendedMovies = [];
   List<Movie> popularMovies = [];
@@ -36,7 +37,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 800),
     )..repeat(reverse: true);
 
-    _blinkAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(_blinkController);
+    _blinkAnimation = Tween<double>(
+      begin: 0.3,
+      end: 1.0,
+    ).animate(_blinkController);
 
     _loadMovies();
   }
@@ -55,16 +59,22 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     dynamic cachedUidValue = await CacheService.getValue("currentUserUid");
     String? cachedUid = cachedUidValue?.toString();
 
-    dynamic cachedRecommendedValue = await CacheService.getValue("recommendedMovies");
+    dynamic cachedRecommendedValue = await CacheService.getValue(
+      "recommendedMovies",
+    );
     dynamic cachedPopularValue = await CacheService.getValue("popularMovies");
 
-    dynamic cachedLastFetchedTimeValue = await CacheService.getValue("lastMoviesFetchedTime");
+    dynamic cachedLastFetchedTimeValue = await CacheService.getValue(
+      "lastMoviesFetchedTime",
+    );
     Duration diff = Duration(minutes: 10);
     print(cachedUid);
     print(cachedLastFetchedTimeValue);
     if (cachedLastFetchedTimeValue != null) {
       try {
-        diff = DateTime.now().difference(DateTime.parse(cachedLastFetchedTimeValue.toString()));
+        diff = DateTime.now().difference(
+          DateTime.parse(cachedLastFetchedTimeValue.toString()),
+        );
       } catch (e) {
         log("Failed to parse last fetched time: $e");
         diff = Duration(minutes: 10);
@@ -86,7 +96,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       });
 
       await CacheService.setValue("currentUserUid", userId);
-      await CacheService.setValue("lastMoviesFetchedTime", DateTime.now().toIso8601String());
+      await CacheService.setValue(
+        "lastMoviesFetchedTime",
+        DateTime.now().toIso8601String(),
+      );
     } else {
       print("Loading from cache");
       print(cachedLastFetchedTimeValue);
@@ -169,12 +182,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   children: recommendedMovies.isEmpty
                       ? List.generate(5, (index) => _loadingMovieList())
                       : recommendedMovies.map((movie) {
-                    return _movieList(
-                        'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                        movie.title ?? '',
-                        (movie.genres ?? []).join('/'),
-                        movie.voteAverage?.toStringAsFixed(2) ?? '-');
-                  }).toList(),
+                          return _movieList(
+                            'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                            movie.title ?? '',
+                            (movie.genres ?? []).join('/'),
+                            movie.voteAverage?.toStringAsFixed(2) ?? '-',
+                          );
+                        }).toList(),
                 ),
               ),
 
@@ -191,12 +205,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   children: popularMovies.isEmpty
                       ? List.generate(5, (index) => _loadingMovieList())
                       : popularMovies.map((movie) {
-                    return _movieList(
-                        'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                        movie.title ?? '',
-                        (movie.genres ?? []).join('/'),
-                        movie.voteAverage?.toStringAsFixed(2) ?? '-');
-                  }).toList(),
+                          return _movieList(
+                            'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                            movie.title ?? '',
+                            (movie.genres ?? []).join('/'),
+                            movie.voteAverage?.toStringAsFixed(2) ?? '-',
+                          );
+                        }).toList(),
                 ),
               ),
 

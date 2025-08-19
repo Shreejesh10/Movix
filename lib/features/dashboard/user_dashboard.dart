@@ -2,7 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'package:recommender/common_widgets/custom_app_bar.dart';
+import 'package:Movix/common_widgets/custom_app_bar.dart';
 import '../../core/route_config/route_names.dart';
 
 class UserDashboardScreen extends StatefulWidget {
@@ -21,19 +21,39 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
     "Planned": 3,
   };
 
-  final List<Color> colorList = [
-    Colors.red,
-    Colors.green,
-    Colors.cyan,
-  ];
+  final List<Color> colorList = [Colors.red, Colors.green, Colors.cyan];
 
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
-      Icon(Icons.home, size: 30, color: index == 0 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0)),
-      Icon(Icons.list, size: 30, color: index == 1 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0)),
-      Icon(Icons.graphic_eq_outlined, size: 30, color: index == 2 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0)),
-      Icon(Icons.person, size: 30, color: index == 3 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0)),
+      Icon(
+        Icons.home,
+        size: 30,
+        color: index == 0
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
+      ),
+      Icon(
+        Icons.list,
+        size: 30,
+        color: index == 1
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
+      ),
+      Icon(
+        Icons.graphic_eq_outlined,
+        size: 30,
+        color: index == 2
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
+      ),
+      Icon(
+        Icons.person,
+        size: 30,
+        color: index == 3
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
+      ),
     ];
 
     return Scaffold(
@@ -97,9 +117,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
                     colorList: colorList,
                     chartType: ChartType.ring,
                     ringStrokeWidth: 14,
-                    legendOptions: const LegendOptions(
-                      showLegends: false,
-                    ),
+                    legendOptions: const LegendOptions(showLegends: false),
                     chartValuesOptions: const ChartValuesOptions(
                       showChartValues: false,
                     ),
@@ -184,18 +202,12 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
         Container(
           width: 12.w,
           height: 12.w,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
         SizedBox(width: 6.w),
         Text(
           title,
-          style: TextStyle(
-            color: Colors.grey[300],
-            fontSize: 12.sp,
-          ),
+          style: TextStyle(color: Colors.grey[300], fontSize: 12.sp),
         ),
       ],
     );

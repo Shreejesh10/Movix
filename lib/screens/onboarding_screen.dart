@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../core/route_config/route_names.dart';
-import 'package:recommender/constants.dart';
-import 'package:recommender/models/genre.dart';
-import 'package:recommender/api/api.dart';
+import 'package:Movix/constants.dart';
+import 'package:Movix/models/genre.dart';
+import 'package:Movix/api/api.dart';
 import 'package:collection/collection.dart';
-import 'package:recommender/features/services/cache_service.dart';
+import 'package:Movix/features/services/cache_service.dart';
 
 class GenreSelectionScreen extends StatefulWidget {
   final bool fromSettings;
@@ -106,14 +106,16 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                       spacing: 10.w,
                       runSpacing: 12.h,
                       children: genres.map((genre) {
-                        final isSelected =
-                        selectedGenres.any((g) => g.id == genre.id);
+                        final isSelected = selectedGenres.any(
+                          (g) => g.id == genre.id,
+                        );
                         return GestureDetector(
                           onTap: () {
                             setState(() {
                               if (isSelected) {
-                                selectedGenres
-                                    .removeWhere((g) => g.id == genre.id);
+                                selectedGenres.removeWhere(
+                                  (g) => g.id == genre.id,
+                                );
                               } else {
                                 selectedGenres.add(genre);
                               }
@@ -123,7 +125,9 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 14.w, vertical: 8.h),
+                              horizontal: 14.w,
+                              vertical: 8.h,
+                            ),
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? const Color.fromRGBO(255, 56, 60, 1)
@@ -150,10 +154,7 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                       child: Text(
                         "Select the genres you\nlike to watch",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.sp,
-                        ),
+                        style: TextStyle(color: Colors.black, fontSize: 20.sp),
                       ),
                     ),
 
@@ -165,7 +166,7 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () async {
-                            if (changedPreferences){
+                            if (changedPreferences) {
                               bool proceed = true;
                             }
                             if (widget.fromSettings) {
@@ -181,8 +182,7 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                               await updateUserPreferences(selectedGenres);
                               setState(() {
                                 changedPreferences = false;
-                                initialPreferences =
-                                    List.from(selectedGenres);
+                                initialPreferences = List.from(selectedGenres);
                               });
 
                               // Clear caches
@@ -193,14 +193,20 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                             // Navigate
                             if (!widget.fromSettings) {
                               Navigator.pushNamed(
-                                  context, RouteName.homeScreen);
+                                context,
+                                RouteName.homeScreen,
+                              );
                             } else {
                               Navigator.pop(context);
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                            const Color.fromRGBO(255, 56, 60, 1),
+                            backgroundColor: const Color.fromRGBO(
+                              255,
+                              56,
+                              60,
+                              1,
+                            ),
                             padding: EdgeInsets.symmetric(vertical: 14.h),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.r),

@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:recommender/features/services/cache_service.dart';
+import 'package:Movix/features/services/cache_service.dart';
 
 import '../../core/route_config/route_names.dart';
 import '../services/auth_service.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:recommender/constants.dart';
+import 'package:Movix/constants.dart';
 import 'dart:developer';
 
 class SignupScreen extends StatefulWidget {
@@ -84,23 +84,26 @@ class _SignupScreenState extends State<SignupScreen> {
                             );
 
                             String? uid = userCredential.user?.uid;
-                            if(uid != null) {
+                            if (uid != null) {
                               CacheService.setValue('currentUserUid', uid);
                             }
 
                             //Passing user UID to fastAPI backend
-                            if((uid??'').isNotEmpty){
+                            if ((uid ?? '').isNotEmpty) {
                               final userName = _usernameController.text.trim();
                               final email = userCredential.user!.email ?? '';
-                              final signUpMethod = 'EmailAndPassword'; // Or whatever method you use
+                              final signUpMethod =
+                                  'EmailAndPassword'; // Or whatever method you use
 
-                              final url = Uri.parse('$API_URL/user/add_user_data');
+                              final url = Uri.parse(
+                                '$API_URL/user/add_user_data',
+                              );
 
                               final body = jsonEncode({
                                 "firebase_user_id": uid,
                                 "user_name": userName,
                                 "email": email,
-                                "sign_up_method": signUpMethod
+                                "sign_up_method": signUpMethod,
                               });
 
                               log("Making request to url: $url");
@@ -112,9 +115,13 @@ class _SignupScreenState extends State<SignupScreen> {
                               );
 
                               if (response.statusCode == 200) {
-                                log("User data sent successfully: ${response.body}");
+                                log(
+                                  "User data sent successfully: ${response.body}",
+                                );
                               } else {
-                                log("Failed to send user data: ${response.statusCode} ${response.body}");
+                                log(
+                                  "Failed to send user data: ${response.statusCode} ${response.body}",
+                                );
                               }
                             }
 
@@ -146,7 +153,6 @@ class _SignupScreenState extends State<SignupScreen> {
                             // Catch any other errors
                             log('An unexpected error occurred. $e');
                             ScaffoldMessenger.of(context).showSnackBar(
-
                               SnackBar(
                                 content: Text('An unexpected error occurred.'),
                                 backgroundColor: Colors.redAccent,

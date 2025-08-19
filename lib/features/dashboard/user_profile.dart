@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:recommender/common_widgets/custom_app_bar.dart';
-import 'package:recommender/screens/onboarding_screen.dart';
-import 'package:recommender/theme/theme_provider.dart';
+import 'package:Movix/common_widgets/custom_app_bar.dart';
+import 'package:Movix/screens/onboarding_screen.dart';
+import 'package:Movix/theme/theme_provider.dart';
 import '../../core/route_config/route_names.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -64,8 +64,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Icons.menu_book_outlined,
             () {
               Navigator.push(
-              context, MaterialPageRoute(builder: (context)=> const GenreSelectionScreen(fromSettings: true,),
-              )
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const GenreSelectionScreen(fromSettings: true),
+                ),
               );
             },
           ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:recommender/models/movie.dart';
-import 'package:recommender/features/services/cache_service.dart';
-import 'package:recommender/api/api.dart';
+import 'package:Movix/models/movie.dart';
+import 'package:Movix/features/services/cache_service.dart';
+import 'package:Movix/api/api.dart';
 import 'dart:developer';
 
 import '../common_widgets/edit_movie_status.dart';
@@ -33,15 +33,21 @@ class _ViewallScreenState extends State<ViewallScreen> {
     dynamic cachedUidValue = await CacheService.getValue("currentUserUid");
     String? cachedUid = cachedUidValue?.toString();
 
-    dynamic cachedRecommendedValue = await CacheService.getValue("recommendedMovies");
+    dynamic cachedRecommendedValue = await CacheService.getValue(
+      "recommendedMovies",
+    );
     dynamic cachedPopularValue = await CacheService.getValue("popularMovies");
 
-    dynamic cachedLastFetchedTimeValue = await CacheService.getValue("lastMoviesFetchedTime");
+    dynamic cachedLastFetchedTimeValue = await CacheService.getValue(
+      "lastMoviesFetchedTime",
+    );
     Duration diff = Duration(minutes: 10);
 
     if (cachedLastFetchedTimeValue != null) {
       try {
-        diff = DateTime.now().difference(DateTime.parse(cachedLastFetchedTimeValue.toString()));
+        diff = DateTime.now().difference(
+          DateTime.parse(cachedLastFetchedTimeValue.toString()),
+        );
       } catch (e) {
         log("Failed to parse last fetched time: $e");
         diff = Duration(minutes: 10);
@@ -49,7 +55,10 @@ class _ViewallScreenState extends State<ViewallScreen> {
     }
 
     // Only call API if cache is invalid
-    if (userId != cachedUid || cachedRecommendedValue == null || cachedPopularValue == null || diff.inMinutes > 5) {
+    if (userId != cachedUid ||
+        cachedRecommendedValue == null ||
+        cachedPopularValue == null ||
+        diff.inMinutes > 5) {
       print("Loading from api");
       final recommended = await getRecommendedMovies();
       final popular = await getPopularMovies();
@@ -59,8 +68,10 @@ class _ViewallScreenState extends State<ViewallScreen> {
         popularMovies = popular;
       });
 
-      await CacheService.setValue("lastMoviesFetchedTime", DateTime.now().toIso8601String());
-
+      await CacheService.setValue(
+        "lastMoviesFetchedTime",
+        DateTime.now().toIso8601String(),
+      );
     } else {
       print("Loading from cache");
       print(cachedLastFetchedTimeValue);
@@ -102,22 +113,26 @@ class _ViewallScreenState extends State<ViewallScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 10.h, bottom: 55.h),
+          padding: EdgeInsets.only(
+            left: 15.w,
+            right: 15.w,
+            top: 10.h,
+            bottom: 55.h,
+          ),
           child: Column(
             children: [
               SizedBox(height: 18.h),
               ...recommendedMovies.map((movie) {
                 return _movielist(
-                    'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                    movie.title??'',
-                    (movie.genres??[]).join('/'),
-                    movie.releaseDate??''.split('-')[0],
-                    movie.voteAverage?.toStringAsFixed(2) ?? '-'
+                  'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                  movie.title ?? '',
+                  (movie.genres ?? []).join('/'),
+                  movie.releaseDate ?? ''.split('-')[0],
+                  movie.voteAverage?.toStringAsFixed(2) ?? '-',
                 );
               }),
             ],
           ),
-
         ),
       ),
     );
@@ -215,11 +230,7 @@ class _ViewallScreenState extends State<ViewallScreen> {
                 onPressed: () {
                   _addStatusList();
                 },
-                icon: Icon(
-                  Icons.add,
-                  size: 25.h,
-                  color: Colors.white38,
-                ),
+                icon: Icon(Icons.add, size: 25.h, color: Colors.white38),
               ),
             ),
           ],
@@ -227,6 +238,7 @@ class _ViewallScreenState extends State<ViewallScreen> {
       ),
     );
   }
+
   void _addStatusList() {
     String selectedStatus = 'Currently Watching';
 
@@ -254,13 +266,18 @@ class _ViewallScreenState extends State<ViewallScreen> {
                     value: selectedStatus,
                     isExpanded: true,
                     dropdownColor: Colors.grey[900],
-                    items: ['Currently Watching', 'Completed', 'On hold', 'Plan to watch']
-                        .map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
+                    items:
+                        [
+                          'Currently Watching',
+                          'Completed',
+                          'On hold',
+                          'Plan to watch',
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                     onChanged: (newValue) {
                       setState(() {
                         selectedStatus = newValue!;
@@ -274,7 +291,10 @@ class _ViewallScreenState extends State<ViewallScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(); // Cancel
                   },
-                  child: const Text('Cancel', style: TextStyle(color: Colors.white),),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -284,9 +304,11 @@ class _ViewallScreenState extends State<ViewallScreen> {
                   onPressed: () {
                     print("Selected status: $selectedStatus");
                     Navigator.of(context).pop(); // Save
-
                   },
-                  child: const Text('Save', style: TextStyle(color: Colors.white, fontSize:18),),
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                 ),
               ],
             );

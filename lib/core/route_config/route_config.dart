@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:recommender/core/route_config/route_names.dart';
-import 'package:recommender/features/auth/login.dart';
-import 'package:recommender/features/auth/signup.dart';
-import 'package:recommender/features/dashboard/admin_dashboard.dart';
-import 'package:recommender/features/dashboard/home.dart';
-import 'package:recommender/features/dashboard/user_dashboard.dart';
-import 'package:recommender/features/dashboard/user_profile.dart';
-import 'package:recommender/screens/addMovie.dart';
-import 'package:recommender/screens/lists.dart';
-import 'package:recommender/screens/movie_details.dart';
-import 'package:recommender/screens/onboarding_screen.dart';
-import 'package:recommender/screens/splash_screen.dart';
-import 'package:recommender/screens/viewall.dart';
+import 'package:Movix/core/route_config/route_names.dart';
+import 'package:Movix/features/auth/login.dart';
+import 'package:Movix/features/auth/signup.dart';
+import 'package:Movix/features/dashboard/admin_dashboard.dart';
+import 'package:Movix/features/dashboard/home.dart';
+import 'package:Movix/features/dashboard/user_dashboard.dart';
+import 'package:Movix/features/dashboard/user_profile.dart';
+import 'package:Movix/screens/addMovie.dart';
+import 'package:Movix/screens/lists.dart';
+import 'package:Movix/screens/movie_details.dart';
+import 'package:Movix/screens/onboarding_screen.dart';
+import 'package:Movix/screens/splash_screen.dart';
+import 'package:Movix/screens/viewall.dart';
 
 class RouteConfig {
   RouteConfig._();
@@ -44,7 +44,7 @@ class RouteConfig {
       case RouteName.adminDashboard:
         return MaterialPageRoute(builder: (_) => const AdminDashboard());
       case RouteName.addMovieScreen:
-        return MaterialPageRoute(builder:  (_) => const AddMovieScreen());
+        return MaterialPageRoute(builder: (_) => const AddMovieScreen());
 
       default:
         return _errorRoute();

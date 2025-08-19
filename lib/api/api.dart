@@ -1,12 +1,13 @@
-import 'package:recommender/constants.dart';
+import 'package:Movix/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:developer';
-import 'package:recommender/models/allModels.dart';
-import 'package:recommender/features/services/cache_service.dart';
+import 'package:Movix/models/allModels.dart';
+import 'package:Movix/features/services/cache_service.dart';
 
-Future<Map<String, String>> getHeaders() async { //Used to get headers from the firebase
+Future<Map<String, String>> getHeaders() async {
+  //Used to get headers from the firebase
   // Get Firebase ID Token
   final user = FirebaseAuth.instance.currentUser;
   final idToken = await user?.getIdToken();
@@ -17,18 +18,23 @@ Future<Map<String, String>> getHeaders() async { //Used to get headers from the 
 
   return {
     "Content-Type": "application/json",
-    "Authorization": "Bearer $idToken",  // ✅ send token here
+    "Authorization": "Bearer $idToken", // ✅ send token here
   };
 }
 
-String? getUserId(){
+String? getUserId() {
   // Get Firebase userID
   final user = FirebaseAuth.instance.currentUser;
   final uid = user?.uid;
   return uid;
 }
 
-Future<void> addUserData(String uid, String userName, String email, String signUpMethod) async {
+Future<void> addUserData(
+  String uid,
+  String userName,
+  String email,
+  String signUpMethod,
+) async {
   try {
     final url = Uri.parse('$API_URL/user/add_user_data');
 
@@ -46,7 +52,9 @@ Future<void> addUserData(String uid, String userName, String email, String signU
     if (response.statusCode == 200) {
       log("✅ User data sent successfully: ${response.body}");
     } else {
-      log("❌ Failed to send user data: ${response.statusCode} ${response.body}");
+      log(
+        "❌ Failed to send user data: ${response.statusCode} ${response.body}",
+      );
     }
   } catch (e) {
     log("Error sending user data: $e");
@@ -56,7 +64,7 @@ Future<void> addUserData(String uid, String userName, String email, String signU
 Future<List<Genre>> getCurrentUserPreferences() async {
   try {
     final firebaseUid = getUserId();
-    if (firebaseUid == null){
+    if (firebaseUid == null) {
       log("Error: Failed to get userID");
       return [];
     }
@@ -71,30 +79,28 @@ Future<List<Genre>> getCurrentUserPreferences() async {
     final preferences = prefsJson.map((json) => Genre.fromJson(json)).toList();
 
     return preferences;
-  }
-  catch(e) {
+  } catch (e) {
     log("Error while getting current preferences: $e");
     return [];
   }
 }
 
-Future<String> updateUserPreferences(List<Genre> genres) async{
+Future<String> updateUserPreferences(List<Genre> genres) async {
   try {
     final url = Uri.parse("$API_URL/user/update_user_preferences");
-    final genresJson = genres.map((g) => {
-      "genre_id": g.id,
-      "genre_name": g.name,
-    }).toList();
+    final genresJson = genres
+        .map((g) => {"genre_id": g.id, "genre_name": g.name})
+        .toList();
 
     final uid = getUserId();
 
-    if (uid == null){
+    if (uid == null) {
       return "Error: Failed to get userID";
     }
 
     final body = jsonEncode({
       "firebase_user_id": uid,
-      "preferences": genresJson
+      "preferences": genresJson,
     });
 
     final headers = await getHeaders();
@@ -106,9 +112,11 @@ Future<String> updateUserPreferences(List<Genre> genres) async{
       final data = jsonDecode(response.body);
       return data['message'];
     } else {
-      log("❌ Failed to send user data: ${response.statusCode} ${response.body}");
+      log(
+        "❌ Failed to send user data: ${response.statusCode} ${response.body}",
+      );
       final data = jsonDecode(response.body);
-        return "Error: An error occurred while updating preferences.";
+      return "Error: An error occurred while updating preferences.";
     }
   } catch (e) {
     log("Error while updating preferences: $e");
