@@ -12,6 +12,7 @@ import 'package:Movix/screens/movie_details.dart';
 import 'package:Movix/screens/onboarding_screen.dart';
 import 'package:Movix/screens/splash_screen.dart';
 import 'package:Movix/screens/viewall.dart';
+import 'package:Movix/models/movie.dart';
 
 class RouteConfig {
   RouteConfig._();
@@ -40,7 +41,8 @@ class RouteConfig {
       case RouteName.viewallScreen:
         return MaterialPageRoute(builder: (_) => const ViewallScreen());
       case RouteName.movieDetailScreen:
-        return MaterialPageRoute(builder: (_) => const MovieDetailsScreen());
+        final movie = settings.arguments as Movie;
+        return MaterialPageRoute(builder: (_) => MovieDetailsScreen(movie: movie));
       case RouteName.adminDashboard:
         return MaterialPageRoute(builder: (_) => const AdminDashboard());
       case RouteName.addMovieScreen:

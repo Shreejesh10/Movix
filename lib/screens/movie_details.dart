@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:Movix/models/movie.dart';
 
 import '../common_widgets/edit_movie_status.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
-  const MovieDetailsScreen({super.key});
+  final Movie movie;
+  const MovieDetailsScreen({super.key, required this.movie});
 
   @override
   State<MovieDetailsScreen> createState() => _MovieDetailsScreenState();
@@ -50,8 +52,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           SizedBox(
             height: screenHeight * 0.3,
             width: double.infinity,
-            child: Image.asset(
-              'assets/images/Movie Poster/F1.jpg',
+            child: Image.network(
+              'http://image.tmdb.org/t/p/w400/${widget.movie.backdropPath}',
               fit: BoxFit.cover,
             ),
           ),
@@ -86,9 +88,10 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                                 offset: const Offset(0, 4),
                               ),
                             ],
-                            image: const DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/Movie Poster/F1.jpg'),
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                'http://image.tmdb.org/t/p/w200/${widget.movie.posterPath}',
+                              ),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -99,7 +102,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "F1",
+                                widget.movie.title??'',
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,

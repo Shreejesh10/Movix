@@ -15,6 +15,12 @@ class Movie{
   int? voteCount;
   List<int>? genreVector;
   List<String>? genres;
+  int? budget;
+  String? homepage;
+  String? imdbId;
+  List<String>? originCountry;
+  int? runtime;
+  String? tagline;
 
   Movie({
     required this.id,
@@ -33,6 +39,12 @@ class Movie{
     this.voteCount,
     this.genreVector,
     this.genres,
+    this.budget,
+    this.homepage,
+    this.imdbId,
+    this.originCountry,
+    this.runtime,
+    this.tagline
   });
 
   // Factory constructor
@@ -53,9 +65,17 @@ class Movie{
       voteAverage: (json['vote_average'] as num?)?.toDouble(),
       voteCount: json['vote_count'],
       genreVector: json['genre_vector'] != null ? List<int>.from(json['genre_vector']) : null,
-      genres: json['genres'] != null
-          ? List<String>.from(json['genres'].map((g) => g.toString()))
+      genres: json['genreNames'] != null
+          ? List<String>.from(json['genreNames'].map((g) => g.toString()))
           : null,
+      budget: json['budget'],
+      homepage: json['homepage'],
+      imdbId: json['imdb_id'],
+      originCountry: json['origin_country'] != null
+          ? List<String>.from(json['origin_country'].map((g) => g.toString()))
+          : null,
+      runtime: json['runtime'],
+      tagline: json['tagline']
     );
   }
 }

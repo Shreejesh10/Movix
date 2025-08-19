@@ -182,13 +182,14 @@ class _HomeScreenState extends State<HomeScreen>
                   children: recommendedMovies.isEmpty
                       ? List.generate(5, (index) => _loadingMovieList())
                       : recommendedMovies.map((movie) {
-                          return _movieList(
-                            'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                            movie.title ?? '',
-                            (movie.genres ?? []).join('/'),
-                            movie.voteAverage?.toStringAsFixed(2) ?? '-',
-                          );
-                        }).toList(),
+                    return _movieList(
+                        'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                        movie.title ?? '',
+                        (movie.genres ?? []).join('/'),
+                        movie.voteAverage?.toStringAsFixed(2) ?? '-',
+                        movie
+                    );
+                  }).toList(),
                 ),
               ),
 
@@ -205,13 +206,14 @@ class _HomeScreenState extends State<HomeScreen>
                   children: popularMovies.isEmpty
                       ? List.generate(5, (index) => _loadingMovieList())
                       : popularMovies.map((movie) {
-                          return _movieList(
-                            'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                            movie.title ?? '',
-                            (movie.genres ?? []).join('/'),
-                            movie.voteAverage?.toStringAsFixed(2) ?? '-',
-                          );
-                        }).toList(),
+                    return _movieList(
+                        'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                        movie.title ?? '',
+                        (movie.genres ?? []).join('/'),
+                        movie.voteAverage?.toStringAsFixed(2) ?? '-',
+                        movie
+                    );
+                  }).toList(),
                 ),
               ),
 
@@ -280,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _movieList(String imagePath, String title, String genre, String imdb) {
+  Widget _movieList(String imagePath, String title, String genre, String imdb, Movie movie) {
     return Container(
       margin: EdgeInsets.only(right: 12.w),
       height: 260.h,
@@ -292,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen>
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          Navigator.pushNamed(context, RouteName.movieDetailScreen);
+          Navigator.pushNamed(context, RouteName.movieDetailScreen, arguments: movie);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

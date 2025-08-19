@@ -184,10 +184,6 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                                 changedPreferences = false;
                                 initialPreferences = List.from(selectedGenres);
                               });
-
-                              // Clear caches
-                              CacheService.remove('recommendedMovies');
-                              CacheService.remove('popularMovies');
                             }
 
                             // Navigate
@@ -199,6 +195,10 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                             } else {
                               Navigator.pop(context);
                             }
+
+                            // Clear caches
+                            CacheService.remove('recommendedMovies');
+                            CacheService.remove('popularMovies');
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromRGBO(
