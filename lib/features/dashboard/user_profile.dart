@@ -12,12 +12,14 @@ import '../../core/route_config/route_names.dart';
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
 
+
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   int index = 3;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -56,19 +58,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           _editProfileButton(
             'Edit Profile',
             Icons.mode_edit_outline_outlined,
-            () {
+                () {
               _showEditProfileDialog();
             },
           ),
           _editProfileButton(
             'Content Preference',
             Icons.menu_book_outlined,
-            () {
+                () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      const GenreSelectionScreen(fromSettings: true),
+                  const GenreSelectionScreen(fromSettings: true),
                 ),
               );
             },
@@ -291,7 +293,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     }
                     // If validation passes
                     Navigator.of(context).pop();
-                    // Optional: setState(() => update name/email in UI)
+
                   },
                 ),
               ],
@@ -353,10 +355,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         TextEditingController currentPasswordController =
-            TextEditingController();
+        TextEditingController();
         TextEditingController newPasswordController = TextEditingController();
         TextEditingController confirmPasswordController =
-            TextEditingController();
+        TextEditingController();
 
         String? errorText;
 
@@ -443,68 +445,94 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
-                  child: const Text(
+                  child: isLoading
+                      ? SizedBox(
+                    width: 20.w,
+                    height: 20.w,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                      : const Text(
                     'Save',
                     style: TextStyle(color: Colors.white),
                   ),
-                    onPressed: () async {
-                      String currentPass = currentPasswordController.text.trim();
-                      String newPass = newPasswordController.text.trim();
-                      String confirmPass = confirmPasswordController.text.trim();
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                    String currentPass = currentPasswordController.text.trim();
+                    String newPass = newPasswordController.text.trim();
+                    String confirmPass = confirmPasswordController.text.trim();
 
-                      if (currentPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
-                        setState(() => errorText = "All fields are required.");
-                        return;
-                      }
-
-                      if (newPass.length < 6) {
-                        setState(() => errorText = "Password must be at least 6 characters.");
-                        return;
-                      }
-
-                      if (newPass != confirmPass) {
-                        setState(() => errorText = "Passwords do not match.");
-                        return;
-                      }
-
-                      try {
-                        User? user = FirebaseAuth.instance.currentUser;
-
-                        // Re-authenticate the user with current password
-                        AuthCredential credential = EmailAuthProvider.credential(
-                          email: user!.email!,
-                          password: currentPass,
-                        );
-
-                        await user.reauthenticateWithCredential(credential);
-
-                        // Update password
-                        await user.updatePassword(newPass);
-
-                        Navigator.of(context).pop();
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Password changed successfully"),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      } on FirebaseAuthException catch (e) {
-                        setState(() {
-                          if (e.code == 'wrong-password') {
-                            errorText = "Current password is incorrect.";
-                          } else if (e.code == 'requires-recent-login') {
-                            errorText = "Please log in again and try.";
-                          } else {
-                            errorText = "Error: ${e.message}";
-                          }
-                        });
-                      } catch (e) {
-                        setState(() => errorText = "Something went wrong. Try again.");
-                      }
+                    if (currentPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
+                      setState(() => errorText = "All fields are required.");
+                      return;
                     }
 
-                ),
+                    if (newPass.length < 6) {
+                      setState(() => errorText = "Password must be at least 6 characters.");
+                      return;
+                    }
+
+                    if (newPass != confirmPass) {
+                      setState(() => errorText = "Passwords do not match.");
+                      return;
+                    }
+
+                    try {
+                      setState(() {
+                        isLoading = true;
+                        errorText = null;
+                      });
+
+                      User? user = FirebaseAuth.instance.currentUser;
+
+                      // Re-authenticate
+                      AuthCredential credential = EmailAuthProvider.credential(
+                        email: user!.email!,
+                        password: currentPass,
+                      );
+                      await user.reauthenticateWithCredential(credential);
+
+                      // Update password
+                      await user.updatePassword(newPass);
+
+                      // 🔥 wait 3 seconds before closing & resetting loader
+                      Future.delayed(const Duration(seconds: 3), () {
+                        if (mounted) {
+                          setState(() => isLoading = false);
+                          Navigator.of(context).pop();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Password changed successfully"),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      });
+                    } on FirebaseAuthException catch (e) {
+                      setState(() {
+                        isLoading = false;
+                        if (e.code == 'wrong-password') {
+                          errorText = "Current password is incorrect.";
+                        } else if (e.code == 'requires-recent-login') {
+                          errorText = "Please log in again and try.";
+                        } else {
+                          errorText = "Error: ${e.message}";
+                        }
+                      });
+                    } catch (e) {
+                      setState(() {
+                        isLoading = false;
+                        errorText = "Something went wrong. Try again.";
+                      });
+                    }
+                  },
+
+                )
+
               ],
             );
           },

@@ -1,3 +1,4 @@
+import 'package:Movix/features/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,8 +12,11 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final AuthService _authService = AuthService();
 
-  Future<void> _resetPassword() async {
+  bool _isLoading = false;
+
+  void _resetPassword() async {
     final email = _emailController.text.trim();
 
     if (email.isEmpty) {
@@ -22,38 +26,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       return;
     }
 
-    try {
-      // ✅ Check if user exists
-      final signInMethods = await _auth.fetchSignInMethodsForEmail(email);
-      if (signInMethods.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("No user found with this email"),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
+    setState(() => _isLoading = true);
 
-      // ✅ Send reset email
-      await _auth.sendPasswordResetEmail(email: email);
+    final result = await _authService.sendPasswordResetEmail(email);
 
+    setState(() => _isLoading = false);
+
+    if (result != null && result.startsWith("Success")) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Password reset email sent to $email"),
-          backgroundColor: Colors.green,
-        ),
+        const SnackBar(content: Text("Password reset email sent. Check your inbox.")),
       );
-    } on FirebaseAuthException catch (e) {
-      String message = "An error occurred";
-      if (e.code == 'invalid-email') {
-        message = "Invalid email format";
-      } else {
-        message = e.message ?? message;
-      }
-
+      Navigator.pop(context); // return to sign-in screen after success
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message), backgroundColor: Colors.red),
+        SnackBar(content: Text(result ?? "Error: Unknown issue")),
       );
     }
   }
@@ -69,11 +55,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 40),
-
               const Icon(Icons.lock_outline, size: 60, color: Colors.white70),
-
               const SizedBox(height: 32),
-
               const Text(
                 "Reset Your Password",
                 style: TextStyle(
@@ -82,9 +65,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   color: Colors.white,
                 ),
               ),
-
               const SizedBox(height: 12),
-
               const Text(
                 "Enter your email associated with your account to\nreceive a password reset email.",
                 textAlign: TextAlign.center,
@@ -93,9 +74,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   fontSize: 15,
                 ),
               ),
-
               const SizedBox(height: 32),
-
               TextField(
                 controller: _emailController,
                 style: const TextStyle(color: Colors.white),
@@ -110,21 +89,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _resetPassword,
+                  onPressed: _isLoading ? null : _resetPassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
                     "Request",
                     style: TextStyle(
                       color: Colors.white,
@@ -133,9 +112,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 24),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -27,5 +27,23 @@ class AuthService {
       return null;
     }
   }
+  Future<String?> sendPasswordResetEmail(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return "Success: Successfully sent reset email";
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        return("Error: Invalid Email Format");
+      } else if (e.code == 'user-not-found') {
+        return("Error: No user associated with this email.");
+      } else {
+        return("Error: An unknown error occured.");
+      }
+    }
+    catch (error) {
+      log("Error: Error while sending forgot password email.");
+      return("Error: An unknown error occured.");
+    }
+  }
 }
 

@@ -304,7 +304,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         backgroundColor: Colors.red,
         shape: CircleBorder(),
         onPressed: _editButtonAction,
-        child: Icon(Icons.edit_outlined, size: 28.sp, color: Colors.white),
+        child: Icon(Icons.add, size: 28.sp, color: Colors.white),
       ),
 
     );
