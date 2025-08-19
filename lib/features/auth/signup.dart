@@ -85,7 +85,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
                             String? uid = userCredential.user?.uid;
                             if(uid != null) {
-                              CacheService.setValue('currentUserId', uid);
+                              CacheService.setValue('currentUserUid', uid);
                             }
 
                             //Passing user UID to fastAPI backend
@@ -144,7 +144,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             );
                           } catch (e) {
                             // Catch any other errors
+                            log('An unexpected error occurred. $e');
                             ScaffoldMessenger.of(context).showSnackBar(
+
                               SnackBar(
                                 content: Text('An unexpected error occurred.'),
                                 backgroundColor: Colors.redAccent,

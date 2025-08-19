@@ -71,7 +71,7 @@ class RecommenderApp extends StatelessWidget {
                         hourMinuteTextColor: Color(0xFF1E1E1E),
                         hourMinuteColor: Colors.grey,
                         dayPeriodTextColor: Colors.white70,
-                        dialBackgroundColor: Colors.black,
+                        dialBackgroundColor: Colors.red,
                         dialHandColor: Colors.white,
                         dialTextColor: Colors.white,
                         entryModeIconColor: Colors.white,
@@ -94,7 +94,7 @@ class RecommenderApp extends StatelessWidget {
                       ),
                       iconButtonTheme: IconButtonThemeData(
                         style: ButtonStyle(
-                          iconColor: WidgetStateProperty.all(Colors.white),
+                          iconColor: WidgetStateProperty.all(Colors.red),
                         ),
                       ),
                       iconTheme: const IconThemeData(color: Colors.white),

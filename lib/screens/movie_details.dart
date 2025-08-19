@@ -136,6 +136,81 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                                   ),
                                 ],
                               ),
+
+                              //User Rating
+                              SizedBox(height: 6.h,),
+                              ElevatedButton(
+                                onPressed: () {
+                                  double _currentRating = 5.0; // Default value
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return StatefulBuilder(
+                                        builder: (context, setState) {
+                                          return AlertDialog(
+                                            title: Text('Rate Now'),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text('Rate this movie from 1 to 10'),
+                                                SizedBox(height: 20),
+                                                Slider(
+                                                  activeColor: Colors.yellowAccent,
+                                                  value: _currentRating,
+                                                  min: 1,
+                                                  max: 10,
+                                                  divisions: 9,
+                                                  label: _currentRating.toStringAsFixed(1),
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      _currentRating = value;
+                                                    });
+                                                  },
+                                                ),
+                                                Text(
+                                                  'Your rating: ${_currentRating.toStringAsFixed(1)}',
+                                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop(); // Cancel
+                                                },
+                                                child: Text('Cancel', style: TextStyle(color: Colors.white, fontSize: 14.sp),),
+                                              ),
+                                              ElevatedButton(
+
+                                                onPressed: () {
+                                                  Navigator.of(context).pop(); // Close dialog
+                                                  //For rating logic
+                                                  print('User rated: ${_currentRating.toStringAsFixed(1)}');
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.redAccent,
+                                                ),
+
+                                                child: Text('Submit', style: TextStyle(color: Colors.white,fontSize: 14.sp),),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                ),
+                                child: Text(
+                                  'Rate Now',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )
+
+
                             ],
                           ),
                         ),

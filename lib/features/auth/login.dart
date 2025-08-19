@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -32,17 +33,19 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submit() async {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
       try {
-        // Attempt sign in
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
 
-        // Navigate based on email
         if (email == 'admin@gmail.com') {
           Navigator.pushNamed(context, RouteName.adminDashboard);
         } else {
@@ -50,8 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         String? firebaseUid = FirebaseAuth.instance.currentUser?.uid;
-        if(firebaseUid != null) {
-          CacheService.setValue('currentUserId', firebaseUid);
+        if (firebaseUid != null) {
+          CacheService.setValue('currentUserUid', firebaseUid);
         }
       } on FirebaseAuthException catch (e) {
         String message;
@@ -79,9 +82,12 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: Colors.redAccent,
           ),
         );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
       }
     } else {
-      // Handle input errors
       if (_emailController.text.isEmpty ||
           !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
               .hasMatch(_emailController.text.trim())) {
@@ -154,14 +160,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: double.infinity,
                       height: 50.h,
                       child: ElevatedButton(
-                        onPressed: _submit,
+                        onPressed: _isLoading ? null : _submit,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFFF383C),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.r),
                           ),
                         ),
-                        child: Text(
+                        child: _isLoading
+                            ? SizedBox(
+                          width: 24.w,
+                          height: 24.w,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                            : Text(
                           'Sign in',
                           style: TextStyle(
                             fontSize: 18.sp,
@@ -171,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+
                     SizedBox(height: 20.h),
 
                     Row(

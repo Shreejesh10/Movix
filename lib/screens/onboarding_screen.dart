@@ -29,14 +29,13 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
   }
 
   Future<void> _loadUserPreferences() async {
-    final prefs = await getCurrentUserPreferences(); // your async function
+    final prefs = await getCurrentUserPreferences();
     setState(() {
       selectedGenres = prefs;
       initialPreferences = List<Genre>.from(prefs);
     });
   }
 
-  //Checking if preference actually changed to validate before calling the API
   bool _preferencesChanged() {
     final selectedIds = selectedGenres.map((g) => g.id).toSet();
     final initialIds = initialPreferences.map((g) => g.id).toSet();
@@ -46,7 +45,7 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop:false,
+      canPop: false,
       child: Scaffold(
         body: Stack(
           children: [
@@ -70,15 +69,14 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          if (!widget.fromSettings){
+                          if (!widget.fromSettings) {
                             Navigator.pushNamed(context, RouteName.homeScreen);
-                          }else{
+                          } else {
                             Navigator.pop(context);
                           }
-
                         },
                         child: Text(
-                          "Skip",
+                          ".",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 14.sp,
@@ -108,12 +106,14 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
                       spacing: 10.w,
                       runSpacing: 12.h,
                       children: genres.map((genre) {
-                        final isSelected = selectedGenres.any((g) => g.id == genre.id);
+                        final isSelected =
+                        selectedGenres.any((g) => g.id == genre.id);
                         return GestureDetector(
                           onTap: () {
                             setState(() {
                               if (isSelected) {
-                                selectedGenres.removeWhere((g) => g.id == genre.id);
+                                selectedGenres
+                                    .removeWhere((g) => g.id == genre.id);
                               } else {
                                 selectedGenres.add(genre);
                               }
@@ -159,31 +159,44 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
 
                     SizedBox(height: 30.h),
 
-                    // Next button
+                    // Next / Save Button
                     Center(
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () async{
-                            if(changedPreferences){
-                              String result = await updateUserPreferences(selectedGenres);
+                          onPressed: () async {
+                            if (changedPreferences){
+                              bool proceed = true;
+                            }
+                            if (widget.fromSettings) {
+                              bool? confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    _areYouSure(),
+                              );
+
+                              if (confirm != true) return;
+
+                              // Save preferences
+                              await updateUserPreferences(selectedGenres);
                               setState(() {
-                                changedPreferences = false; // reset after saving
-                                initialPreferences = List.from(selectedGenres); // update baseline
+                                changedPreferences = false;
+                                initialPreferences =
+                                    List.from(selectedGenres);
                               });
 
-                              //removing caches
+                              // Clear caches
                               CacheService.remove('recommendedMovies');
                               CacheService.remove('popularMovies');
                             }
 
-                            if(!widget.fromSettings){
-                              Navigator.pushNamed(context, RouteName.homeScreen);
-                            }
-                            else{
+                            // Navigate
+                            if (!widget.fromSettings) {
+                              Navigator.pushNamed(
+                                  context, RouteName.homeScreen);
+                            } else {
                               Navigator.pop(context);
                             }
-
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -212,6 +225,51 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _areYouSure() {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+      backgroundColor: const Color(0xFF1E1E1E),
+      title: Text(
+        "Are you sure?",
+        style: TextStyle(
+          fontSize: 20.sp,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Text(
+        "Your current recommendations will be updated based on your new preferences.",
+        style: TextStyle(fontSize: 16.sp, color: Colors.grey[400]),
+      ),
+      actions: [
+        TextButton(
+          child: Text(
+            "Cancel",
+            style: TextStyle(color: Colors.grey[400], fontSize: 16.sp),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop(false); // Cancel
+          },
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+          ),
+          child: Text(
+            "Yes",
+            style: TextStyle(color: Colors.white, fontSize: 16.sp),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop(true); // Confirm
+          },
+        ),
+      ],
     );
   }
 }

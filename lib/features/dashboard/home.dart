@@ -18,16 +18,33 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   int index = 0;
   List<Movie> recommendedMovies = [];
   List<Movie> popularMovies = [];
 
+  late AnimationController _blinkController;
+  late Animation<double> _blinkAnimation;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
+    // Initialize blinking animation for loading placeholders
+    _blinkController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
+
+    _blinkAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(_blinkController);
+
     _loadMovies();
+  }
+
+  @override
+  void dispose() {
+    _blinkController.dispose();
+    super.dispose();
   }
 
   void _loadMovies() async {
@@ -43,7 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     dynamic cachedLastFetchedTimeValue = await CacheService.getValue("lastMoviesFetchedTime");
     Duration diff = Duration(minutes: 10);
-
+    print(cachedUid);
+    print(cachedLastFetchedTimeValue);
     if (cachedLastFetchedTimeValue != null) {
       try {
         diff = DateTime.now().difference(DateTime.parse(cachedLastFetchedTimeValue.toString()));
@@ -54,7 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     // Only call API if cache is invalid
-    if (userId != cachedUid || cachedRecommendedValue == null || cachedPopularValue == null || diff.inMinutes > 5) {
+    if (userId != cachedUid ||
+        cachedRecommendedValue == null ||
+        cachedPopularValue == null ||
+        diff.inMinutes > 5) {
       print("Loading from api");
       final recommended = await getRecommendedMovies();
       final popular = await getPopularMovies();
@@ -64,8 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
         popularMovies = popular;
       });
 
+      await CacheService.setValue("currentUserUid", userId);
       await CacheService.setValue("lastMoviesFetchedTime", DateTime.now().toIso8601String());
-
     } else {
       print("Loading from cache");
       print(cachedLastFetchedTimeValue);
@@ -145,20 +166,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.only(left: 15.w),
                 child: Row(
-                  children: [
-                    ...recommendedMovies.map((movie) {
-                      return _movieList(
-                          'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                          movie.title??'',
-                          (movie.genres??[]).join('/'),
-                          movie.voteAverage?.toStringAsFixed(2) ?? '-'
-                      );
-                    })
-                  ],
+                  children: recommendedMovies.isEmpty
+                      ? List.generate(5, (index) => _loadingMovieList())
+                      : recommendedMovies.map((movie) {
+                    return _movieList(
+                        'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                        movie.title ?? '',
+                        (movie.genres ?? []).join('/'),
+                        movie.voteAverage?.toStringAsFixed(2) ?? '-');
+                  }).toList(),
                 ),
               ),
 
-              // Being Watched section
+              // Popular section
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
                 child: _content('Popular Right Now'),
@@ -168,16 +188,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.only(left: 15.w),
                 child: Row(
-                  children: [
-                    ...popularMovies.map((movie) {
-                      return _movieList(
-                          'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                          movie.title??'',
-                          (movie.genres??[]).join('/'),
-                          movie.voteAverage?.toStringAsFixed(2) ?? '-'
-                      );
-                    })
-                  ],
+                  children: popularMovies.isEmpty
+                      ? List.generate(5, (index) => _loadingMovieList())
+                      : popularMovies.map((movie) {
+                    return _movieList(
+                        'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                        movie.title ?? '',
+                        (movie.genres ?? []).join('/'),
+                        movie.voteAverage?.toStringAsFixed(2) ?? '-');
+                  }).toList(),
                 ),
               ),
 
@@ -315,6 +334,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  /// Blinking loading placeholder
+  Widget _loadingMovieList() {
+    return AnimatedBuilder(
+      animation: _blinkAnimation,
+      builder: (context, child) {
+        return Opacity(
+          opacity: _blinkAnimation.value,
+          child: Container(
+            margin: EdgeInsets.only(right: 12.w),
+            height: 260.h,
+            width: 140.w,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      },
     );
   }
 }
