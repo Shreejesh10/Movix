@@ -16,7 +16,7 @@ class UserListScreen extends StatefulWidget {
 
 class _UserListScreenState extends State<UserListScreen> {
   int index = 1;
-  final ScrollController _scrollController = ScrollController(); // <-- Add this
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
@@ -184,6 +184,7 @@ class _UserListScreenState extends State<UserListScreen> {
           color: Colors.white,
           size: 30.sp,
         ),
+
       ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 65.h,

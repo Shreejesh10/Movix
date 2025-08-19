@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -446,35 +447,63 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     'Save',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () {
-                    String currentPass = currentPasswordController.text.trim();
-                    String newPass = newPasswordController.text.trim();
-                    String confirmPass = confirmPasswordController.text.trim();
+                    onPressed: () async {
+                      String currentPass = currentPasswordController.text.trim();
+                      String newPass = newPasswordController.text.trim();
+                      String confirmPass = confirmPasswordController.text.trim();
 
-                    if (currentPass.isEmpty ||
-                        newPass.isEmpty ||
-                        confirmPass.isEmpty) {
-                      setState(() => errorText = "All fields are required.");
-                      return;
+                      if (currentPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
+                        setState(() => errorText = "All fields are required.");
+                        return;
+                      }
+
+                      if (newPass.length < 6) {
+                        setState(() => errorText = "Password must be at least 6 characters.");
+                        return;
+                      }
+
+                      if (newPass != confirmPass) {
+                        setState(() => errorText = "Passwords do not match.");
+                        return;
+                      }
+
+                      try {
+                        User? user = FirebaseAuth.instance.currentUser;
+
+                        // Re-authenticate the user with current password
+                        AuthCredential credential = EmailAuthProvider.credential(
+                          email: user!.email!,
+                          password: currentPass,
+                        );
+
+                        await user.reauthenticateWithCredential(credential);
+
+                        // Update password
+                        await user.updatePassword(newPass);
+
+                        Navigator.of(context).pop();
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Password changed successfully"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } on FirebaseAuthException catch (e) {
+                        setState(() {
+                          if (e.code == 'wrong-password') {
+                            errorText = "Current password is incorrect.";
+                          } else if (e.code == 'requires-recent-login') {
+                            errorText = "Please log in again and try.";
+                          } else {
+                            errorText = "Error: ${e.message}";
+                          }
+                        });
+                      } catch (e) {
+                        setState(() => errorText = "Something went wrong. Try again.");
+                      }
                     }
 
-                    if (newPass.length < 6) {
-                      setState(
-                        () => errorText =
-                            "Password must be at least 6 characters.",
-                      );
-                      return;
-                    }
-
-                    if (newPass != confirmPass) {
-                      setState(() => errorText = "Passwords do not match.");
-                      return;
-                    }
-
-                    //For backend logic
-
-                    Navigator.of(context).pop(); // Close dialog
-                  },
                 ),
               ],
             );

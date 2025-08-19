@@ -21,7 +21,7 @@ class MovieListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.w),
-      height: 120.h,
+      height: 125.h,
       width: 374.w,
       decoration: BoxDecoration(
         color: Colors.grey[900],
@@ -37,7 +37,7 @@ class MovieListTile extends StatelessWidget {
               child: SizedBox(
                 height: 120.h,
                 width: 90.w,
-                child: Image.asset(imagePath, fit: BoxFit.cover),
+                child: Image.network(imagePath, fit: BoxFit.cover),
               ),
             ),
           ),
@@ -60,6 +60,8 @@ class MovieListTile extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     genre,
                     style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                   ),
