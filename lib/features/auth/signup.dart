@@ -23,6 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isLoading = false; // <-- Added loading state
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 _field(_passwordController, 'Password', isPassword: true),
 
                 SizedBox(height: 20.h),
+
                 SizedBox(
                   width: double.infinity,
                   height: 50.h,
@@ -64,9 +66,13 @@ class _SignupScreenState extends State<SignupScreen> {
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: TextButton(
-                      onPressed: () async {
+                      onPressed: _isLoading ? null : () async {
                         FocusScope.of(context).unfocus();
                         if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+
                           final email = _emailController.text.trim();
                           final password = _passwordController.text.trim();
 
@@ -74,11 +80,10 @@ class _SignupScreenState extends State<SignupScreen> {
                             UserCredential userCredential = await FirebaseAuth
                                 .instance
                                 .createUserWithEmailAndPassword(
-                                  email: email,
-                                  password: password,
-                                );
+                              email: email,
+                              password: password,
+                            );
 
-                            // Optionally store display name (username)
                             await userCredential.user?.updateDisplayName(
                               _usernameController.text.trim(),
                             );
@@ -88,12 +93,10 @@ class _SignupScreenState extends State<SignupScreen> {
                               CacheService.setValue('currentUserUid', uid);
                             }
 
-                            //Passing user UID to fastAPI backend
                             if ((uid ?? '').isNotEmpty) {
                               final userName = _usernameController.text.trim();
                               final email = userCredential.user!.email ?? '';
-                              final signUpMethod =
-                                  'EmailAndPassword'; // Or whatever method you use
+                              final signUpMethod = 'EmailAndPassword';
 
                               final url = Uri.parse(
                                 '$API_URL/user/add_user_data',
@@ -115,17 +118,12 @@ class _SignupScreenState extends State<SignupScreen> {
                               );
 
                               if (response.statusCode == 200) {
-                                log(
-                                  "User data sent successfully: ${response.body}",
-                                );
+                                log("User data sent successfully: ${response.body}");
                               } else {
-                                log(
-                                  "Failed to send user data: ${response.statusCode} ${response.body}",
-                                );
+                                log("Failed to send user data: ${response.statusCode} ${response.body}");
                               }
                             }
 
-                            // Navigate to next screen
                             Navigator.pushNamed(
                               context,
                               RouteName.onboardingScreen,
@@ -150,7 +148,6 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                             );
                           } catch (e) {
-                            // Catch any other errors
                             log('An unexpected error occurred. $e');
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -158,13 +155,25 @@ class _SignupScreenState extends State<SignupScreen> {
                                 backgroundColor: Colors.redAccent,
                               ),
                             );
+                          } finally {
+                            setState(() {
+                              _isLoading = false;
+                            });
                           }
                         }
                       },
 
-                      child: Text(
+                      child: _isLoading
+                          ? CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.5,
+                      )
+                          : Text(
                         'Sign Up',
-                        style: TextStyle(color: Colors.white, fontSize: 20.sp),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.sp,
+                        ),
                       ),
                     ),
                   ),
@@ -222,14 +231,13 @@ class _SignupScreenState extends State<SignupScreen> {
                 SizedBox(height: 15.h),
                 GestureDetector(
                   onTap: () async {
-                    UserCredential? userCredential = await AuthService()
-                        .signInWithGoogle();
+                    UserCredential? userCredential =
+                    await AuthService().signInWithGoogle();
 
                     if (userCredential != null) {
                       print("Signed in as ${userCredential.user?.displayName}");
                       Navigator.pushNamed(context, RouteName.homeScreen);
                     } else {
-                      // Show SnackBar on error
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
@@ -302,11 +310,11 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _field(
-    TextEditingController controller,
-    String hintText, {
-    bool isPassword = false,
-    IconData? icon,
-  }) {
+      TextEditingController controller,
+      String hintText, {
+        bool isPassword = false,
+        IconData? icon,
+      }) {
     return StatefulBuilder(
       builder: (context, setState) {
         return Padding(
@@ -338,18 +346,18 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               suffixIcon: isPassword
                   ? IconButton(
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: Colors.grey[500],
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isPasswordVisible = !_isPasswordVisible;
-                        });
-                      },
-                    )
+                icon: Icon(
+                  _isPasswordVisible
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  color: Colors.grey[500],
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              )
                   : Icon(icon, color: Colors.grey[500]),
             ),
             validator: (value) {

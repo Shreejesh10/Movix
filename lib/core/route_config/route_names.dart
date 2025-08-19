@@ -19,5 +19,6 @@ class RouteName {
   static const String movieDetailScreen = '/movieDetailsScreen';
   static const String adminDashboard = '/adminDashboard';
   static const String addMovieScreen = '/addMovieScreen';
+  static const String forgotPasswordScreen = '/forgotPasswordScreen';
 
 }

@@ -1,3 +1,4 @@
+import 'package:Movix/screens/forgotPassword.dart';
 import 'package:flutter/material.dart';
 import 'package:Movix/core/route_config/route_names.dart';
 import 'package:Movix/features/auth/login.dart';
@@ -47,6 +48,8 @@ class RouteConfig {
         return MaterialPageRoute(builder: (_) => const AdminDashboard());
       case RouteName.addMovieScreen:
         return MaterialPageRoute(builder: (_) => const AddMovieScreen());
+      case RouteName.forgotPasswordScreen:
+        return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen());
 
       default:
         return _errorRoute();
