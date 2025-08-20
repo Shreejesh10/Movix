@@ -216,3 +216,77 @@ Future<List<WatchListItem>> getWatchList() async{
     return [];
   }
 }
+
+Future<String> addMovieToWatchList(
+    int movieId,
+    String type,
+    DateTime? startDate,
+    DateTime? endDate,
+) async{
+  try {
+    final url = Uri.parse("$API_URL/user/add_movie_to_list");
+    final headers = await getHeaders();
+
+    final firebaseUid = getUserId();
+    if (firebaseUid == null) {
+      log("Error: Failed to get userID");
+      throw "Failed to get userID";
+    }
+
+    final body = jsonEncode({
+      'firebase_user_id': firebaseUid,
+      'movie_id': movieId,
+      'status': type == "Currently Watching" ? "Watching" : type == "Plan to Watch" ? "Plan To Watch" : "Completed",
+      'startDate': startDate?.toIso8601String(),
+      'endDate': endDate?.toIso8601String()
+    });
+
+    log("Making add movie request to $url");
+    final response = await http.post(url, headers: headers, body:body);
+
+    if (response.statusCode == 200) {
+      await CacheService.remove('recommendedMovies');
+      return "Success: successfully added movie to list";
+    } else {
+      return "Error: An error occurred ${response.statusCode}";
+    }
+
+  } catch (e) {
+    log("Error while fetching watchlist: $e");
+    return "Error: An error occurred";
+  }
+}
+
+Future<WatchListItem?> findMovieInWatchlist(int movieId) async{
+  try {
+    final firebaseUid = getUserId();
+    if (firebaseUid == null) {
+      log("Error: Failed to get userID");
+      throw "Failed to get userID";
+    }
+
+    final url = Uri.parse("$API_URL/user/find_movie_in_watchlist/$firebaseUid/$movieId");
+    final headers = await getHeaders();
+
+    log("Finding movie at watchlist at $url");
+    final response = await http.get(url, headers: headers);
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      final watchListData = data['data'];
+      if(watchListData == null) {
+        return null;
+      } else {
+        WatchListItem watchListItem = WatchListItem.fromJson(data['data']);
+        return watchListItem;
+      }
+    } else {
+      print("Error: An error occurred ${response.statusCode}");
+      return null;
+    }
+
+  } catch (e) {
+    log("Error while fetching watchlist: $e");
+    return null;
+  }
+}

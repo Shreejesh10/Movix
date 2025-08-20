@@ -1,6 +1,8 @@
+import 'package:Movix/models/allModels.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:Movix/models/movie.dart';
+import 'package:Movix/api/api.dart';
 import 'package:intl/intl.dart';
 
 import '../common_widgets/edit_movie_status.dart';
@@ -14,6 +16,23 @@ class MovieDetailsScreen extends StatefulWidget {
 }
 
 class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
+  WatchListItem? watchListInfo;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getWatchListInfo();
+  }
+
+  void _getWatchListInfo() async{
+    WatchListItem? watchListItem = await findMovieInWatchlist(widget.movie.id);
+
+    setState(() {
+      watchListInfo = watchListItem;
+    });
+  }
+
   @override
   String _formatRuntime(int? minutes) {
     if (minutes == null || minutes <= 0) return '-';
@@ -304,7 +323,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         backgroundColor: Colors.red,
         shape: CircleBorder(),
         onPressed: _editButtonAction,
-        child: Icon(Icons.add, size: 28.sp, color: Colors.white),
+        child: watchListInfo == null? Icon(Icons.add, size: 28.sp, color: Colors.white) : Icon(Icons.edit_outlined, size: 28.sp, color: Colors.white),
       ),
 
     );
@@ -466,7 +485,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       dropdownColor: Colors.grey[900],
                       iconEnabledColor: Colors.white,
                       style: const TextStyle(color: Colors.white, fontSize: 17),
-                      items: ['Currently Watching', 'Completed', 'On hold', 'Plan to watch']
+                      items: ['Currently Watching', 'Completed', 'Plan to watch']
                           .map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -494,7 +513,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     backgroundColor: Colors.red,
                     elevation: 4,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     // Validation before saving
                     if (_startDate != null && _endDate != null && _endDate!.isBefore(_startDate!)) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -503,9 +522,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       return;
                     }
 
-                    print("Selected status: $selectedStatus");
-                    print("Start date: ${_startDate != null ? DateFormat('yyyy-MM-dd').format(_startDate!) : 'Not selected'}");
-                    print("End date: ${_endDate != null ? DateFormat('yyyy-MM-dd').format(_endDate!) : 'Not selected'}");
+                    String result = await addMovieToWatchList(widget.movie.id, selectedStatus, _startDate, _endDate);
 
                     Navigator.of(context).pop(); // Save and close
                   },

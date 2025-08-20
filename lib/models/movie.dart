@@ -1,3 +1,5 @@
+import './watchlist.dart';
+
 class Movie{
   int id;
   bool? adult;
@@ -21,6 +23,7 @@ class Movie{
   List<String>? originCountry;
   int? runtime;
   String? tagline;
+  WatchListItem? watchListInfo;
 
   Movie({
     required this.id,
@@ -44,7 +47,8 @@ class Movie{
     this.imdbId,
     this.originCountry,
     this.runtime,
-    this.tagline
+    this.tagline,
+    this.watchListInfo
   });
 
   // Factory constructor
@@ -75,7 +79,9 @@ class Movie{
           ? List<String>.from(json['origin_country'].map((g) => g.toString()))
           : null,
       runtime: json['runtime'],
-      tagline: json['tagline']
+      tagline: json['tagline'],
+      watchListInfo: json['watchListInfo'] != null
+        ? WatchListItem.fromJson(json['watchListInfo']) : null
     );
   }
 }

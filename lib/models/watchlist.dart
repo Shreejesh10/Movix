@@ -22,7 +22,7 @@ class WatchListItem {
   //factory constructor
   factory WatchListItem.fromJson(Map<String, dynamic> json) {
     return WatchListItem(
-      id: json['id'] ?? '',
+      id: json['_id'] ?? '',
       firebaseUserId: json['firebase_user_id'] ?? '',
       movieId: json['movie_id'] ?? 0,
       type: json['type'] ?? '',
