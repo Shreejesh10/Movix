@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
-  void _loadMovies() async {
+  Future<void> _loadMovies() async {
     print("Entered load movies");
 
     String? userId = getUserId();
@@ -59,15 +59,13 @@ class _HomeScreenState extends State<HomeScreen>
     dynamic cachedUidValue = await CacheService.getValue("currentUserUid");
     String? cachedUid = cachedUidValue?.toString();
 
-    dynamic cachedRecommendedValue = await CacheService.getValue(
-      "recommendedMovies",
-    );
+    dynamic cachedRecommendedValue =
+    await CacheService.getValue("recommendedMovies");
     dynamic cachedPopularValue = await CacheService.getValue("popularMovies");
 
-    dynamic cachedLastFetchedTimeValue = await CacheService.getValue(
-      "lastMoviesFetchedTime",
-    );
-    Duration diff = Duration(minutes: 10);
+    dynamic cachedLastFetchedTimeValue =
+    await CacheService.getValue("lastMoviesFetchedTime");
+    Duration diff = const Duration(minutes: 10);
     print(cachedUid);
     print(cachedLastFetchedTimeValue);
     if (cachedLastFetchedTimeValue != null) {
@@ -77,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen>
         );
       } catch (e) {
         log("Failed to parse last fetched time: $e");
-        diff = Duration(minutes: 10);
+        diff = const Duration(minutes: 10);
       }
     }
 
@@ -132,22 +130,22 @@ class _HomeScreenState extends State<HomeScreen>
       Icon(
         Icons.home,
         size: 30,
-        color: index == 0 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 0 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.list,
         size: 30,
-        color: index == 1 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 1 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.graphic_eq_outlined,
         size: 30,
-        color: index == 2 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 2 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.person,
         size: 30,
-        color: index == 3 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 3 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
     ];
 
@@ -156,72 +154,76 @@ class _HomeScreenState extends State<HomeScreen>
       child: Scaffold(
         extendBody: true,
         appBar: const CustomAppBar(title: 'Explore'),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top section
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                child: Column(
-                  children: [
-                    SearchFilterBar(),
-                    SizedBox(height: 15.h),
-                    GenreSelector(),
-                    SizedBox(height: 15.h),
-                    _content('Recommended For You'),
-                  ],
+        body: RefreshIndicator(
+          onRefresh: _loadMovies,
+          color: Colors.redAccent,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top section
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                  child: Column(
+                    children: [
+                      SearchFilterBar(),
+                      SizedBox(height: 15.h),
+                      GenreSelector(),
+                      SizedBox(height: 15.h),
+                      _content('Recommended For You'),
+                    ],
+                  ),
                 ),
-              ),
 
-              // Recommended movies scroll
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.only(left: 15.w),
-                child: Row(
-                  children: recommendedMovies.isEmpty
-                      ? List.generate(5, (index) => _loadingMovieList())
-                      : recommendedMovies.map((movie) {
-                    return _movieList(
+                // Recommended movies scroll
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.only(left: 15.w),
+                  child: Row(
+                    children: recommendedMovies.isEmpty
+                        ? List.generate(5, (index) => _loadingMovieList())
+                        : recommendedMovies.map((movie) {
+                      return _movieList(
                         'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
                         movie.title ?? '',
                         (movie.genres ?? []).join('/'),
                         movie.voteAverage?.toStringAsFixed(2) ?? '-',
-                        movie
-                    );
-                  }).toList(),
+                        movie,
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
 
-              // Popular section
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                child: _content('Popular Right Now'),
-              ),
+                // Popular section
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                  child: _content('Popular Right Now'),
+                ),
 
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.only(left: 15.w),
-                child: Row(
-                  children: popularMovies.isEmpty
-                      ? List.generate(5, (index) => _loadingMovieList())
-                      : popularMovies.map((movie) {
-                    return _movieList(
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.only(left: 15.w),
+                  child: Row(
+                    children: popularMovies.isEmpty
+                        ? List.generate(5, (index) => _loadingMovieList())
+                        : popularMovies.map((movie) {
+                      return _movieList(
                         'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
                         movie.title ?? '',
                         (movie.genres ?? []).join('/'),
                         movie.voteAverage?.toStringAsFixed(2) ?? '-',
-                        movie
-                    );
-                  }).toList(),
+                        movie,
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
 
-              SizedBox(height: 70.h),
-            ],
+                SizedBox(height: 70.h),
+              ],
+            ),
           ),
         ),
-
         bottomNavigationBar: CurvedNavigationBar(
           height: 65.h,
           index: index,
@@ -274,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen>
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w500,
-              color: Color(0xFFFF383C),
+              color: const Color(0xFFFF383C),
             ),
           ),
         ),
@@ -282,7 +284,8 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _movieList(String imagePath, String title, String genre, String imdb, Movie movie) {
+  Widget _movieList(
+      String imagePath, String title, String genre, String imdb, Movie movie) {
     return Container(
       margin: EdgeInsets.only(right: 12.w),
       height: 260.h,
@@ -294,7 +297,8 @@ class _HomeScreenState extends State<HomeScreen>
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          Navigator.pushNamed(context, RouteName.movieDetailScreen, arguments: movie);
+          Navigator.pushNamed(context, RouteName.movieDetailScreen,
+              arguments: movie);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

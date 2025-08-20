@@ -498,7 +498,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       // Update password
                       await user.updatePassword(newPass);
 
-                      // 🔥 wait 3 seconds before closing & resetting loader
+
                       Future.delayed(const Duration(seconds: 3), () {
                         if (mounted) {
                           setState(() => isLoading = false);

@@ -336,7 +336,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
                     const SizedBox(height: 12),
 
-                    // 🔹 START DATE Field
+                    // START DATE Field
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text('Start Date', style: TextStyle(color: Colors.white70, fontSize: 13.sp)),
@@ -349,8 +349,20 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                           initialDate: _startDate ?? DateTime.now(),
                           firstDate: DateTime(1900),
                           lastDate: DateTime(2100),
-                          builder: (context, child) => Theme(data: ThemeData.dark(), child: child!),
+                          builder: (context, child) {
+                            return Theme(
+                              data: ThemeData.dark().copyWith(
+                                colorScheme: const ColorScheme.dark(
+                                  primary: Colors.red,
+                                  onPrimary: Colors.white,
+                                    onSurface: Colors.white,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
                         );
+
                         if (picked != null) {
                           setState(() {
                             _startDate = picked;
@@ -398,10 +410,23 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                         final picked = await showDatePicker(
                           context: context,
                           initialDate: _endDate ?? (_startDate ?? DateTime.now()),
-                          firstDate: _startDate ?? DateTime(1900),  // <-- Restrict here
+                          firstDate: _startDate ?? DateTime(1900),
                           lastDate: DateTime(2100),
-                          builder: (context, child) => Theme(data: ThemeData.dark(), child: child!),
+                          builder: (context, child) {
+                            return Theme(
+                              data: ThemeData.dark().copyWith(
+                                colorScheme: const ColorScheme.dark(
+                                  primary: Colors.red,
+                                  onPrimary: Colors.white,
+
+                                ),
+
+                              ),
+                              child: child!,
+                            );
+                          },
                         );
+
                         if (picked != null) {
                           setState(() {
                             _endDate = picked;
