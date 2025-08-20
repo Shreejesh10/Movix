@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:Movix/common_widgets/custom_search_bar.dart';
 import 'package:Movix/common_widgets/edit_movie_status.dart';
 import 'package:Movix/common_widgets/genre_selection.dart';
+import 'package:intl/intl.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../core/route_config/route_names.dart';
 import 'package:Movix/models/allModels.dart';
@@ -37,20 +38,21 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _loadWatchList();
   }
 
   void _filterWatchList(String type) {
-    final filteredMovies = watchList.where((item) => item.type == type).toList();
+    final filteredMovies =
+    watchList.where((item) => item.type == type).toList();
 
     setState(() {
       filteredWatchList = filteredMovies;
     });
   }
 
-  void _loadWatchList() async {
+  Future<void> _loadWatchList() async {
     final watchListData = await getWatchList();
 
     setState(() {
@@ -66,77 +68,78 @@ class _UserListScreenState extends State<UserListScreen> {
       Icon(
         Icons.home,
         size: 30,
-        color: index == 0
-            ? Colors.red
-            : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 0 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.list,
         size: 30,
-        color: index == 1
-            ? Colors.red
-            : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 1 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.graphic_eq_outlined,
         size: 30,
-        color: index == 2
-            ? Colors.red
-            : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 2 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.person,
         size: 30,
-        color: index == 3
-            ? Colors.red
-            : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 3 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
     ];
 
     return Scaffold(
       extendBody: true,
       appBar: const CustomAppBar(title: 'List'),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 55.h),
-          child: Column(
-            children: [
-              const SearchFilterBar(),
-              SizedBox(height: 15.h),
-              GenreSelector(
-                genres: ['Watching', 'Completed', 'Plan To Watch'],
-                onGenreSelected: (genre) {
-                  _filterWatchList(genre);
-                },
-              ),
-              SizedBox(height: 18.h),
-              ...filteredWatchList.map((item) {
-                return _movielist(
-                  'http://image.tmdb.org/t/p/w200/${item.movie?.posterPath}',
-                  item.movie?.title??'',
-                  item.movie?.genres?.join('/')??'',
-                  item.movie?.releaseDate?.split('-')[0]??'',
-                  item.movie?.voteAverage?.toString() ?? '',
-                  item.type != 'Completed' ? 0 : 1,
-                  item.type != 'Completed' ? 0 : 1,
-                  1
-                );
-              }),
-            ],
+
+
+      body: RefreshIndicator(
+        onRefresh: _loadWatchList,
+        color: Colors.redAccent,
+        child: SingleChildScrollView(
+
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 55.h),
+            child: Column(
+              children: [
+                const SearchFilterBar(),
+                SizedBox(height: 15.h),
+                GenreSelector(
+                  genres: ['Watching', 'Completed', 'Plan To Watch'],
+                  onGenreSelected: (genre) {
+                    _filterWatchList(genre);
+                  },
+                ),
+                SizedBox(height: 18.h),
+                ...filteredWatchList.map((item) {
+                  return _movielist(
+                    'http://image.tmdb.org/t/p/w200/${item.movie?.posterPath}',
+                    item.movie?.title ?? '',
+                    item.movie?.genres?.join('/') ?? '',
+                    item.movie?.releaseDate?.split('-')[0] ?? '',
+                    item.movie?.voteAverage?.toString() ?? '',
+                    item.type != 'Completed' ? 0 : 1,
+                    item.type != 'Completed' ? 0 : 1,
+                    1,
+                    item,
+                  );
+                }),
+              ],
+            ),
           ),
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _scrollToTop,
         backgroundColor: Colors.red,
-
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         child: Icon(
           Icons.arrow_upward_outlined,
           color: Colors.white,
           size: 30.sp,
         ),
-
       ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 65.h,
@@ -167,15 +170,16 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 
   Widget _movielist(
-    String imagePath,
-    String title,
-    String genre,
-    String releaseDate,
-    String imdb,
-    double progress,
-    int currentEp,
-    int totalEp,
-  ) {
+      String imagePath,
+      String title,
+      String genre,
+      String releaseDate,
+      String imdb,
+      double progress,
+      int currentEp,
+      int totalEp,
+      WatchListItem item,
+      ) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.w),
       height: 135.h,
@@ -208,7 +212,6 @@ class _UserListScreenState extends State<UserListScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title
                     Text(
                       title,
                       maxLines: 1,
@@ -253,7 +256,6 @@ class _UserListScreenState extends State<UserListScreen> {
                       ],
                     ),
                     SizedBox(height: 5.h),
-                    // Progress Bar
                     Row(
                       children: [
                         SizedBox(
@@ -269,8 +271,7 @@ class _UserListScreenState extends State<UserListScreen> {
                               ),
                               LayoutBuilder(
                                 builder: (context, constraints) {
-                                  final width =
-                                      constraints.maxWidth *
+                                  final width = constraints.maxWidth *
                                       progress.clamp(0.0, 1.0);
                                   return Container(
                                     width: width,
@@ -304,7 +305,16 @@ class _UserListScreenState extends State<UserListScreen> {
               padding: EdgeInsets.only(top: 6.h, right: 12.w),
               child: IconButton(
                 onPressed: () {
-                  _editButtonAction();
+                  _editButtonAction(
+                    item.movie!.id,
+                    title,
+                    imdb,
+                    releaseDate,
+                    imagePath,
+                    genre,
+                    item.startDate,
+                    item.endDate,
+                  );
                 },
                 icon: Icon(
                   Icons.edit_outlined,
@@ -319,7 +329,16 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 
-  void _editButtonAction() {
+  void _editButtonAction(
+      int movieId,
+      String title,
+      String rating,
+      String releaseYear,
+      String imagePath,
+      String genres,
+      DateTime? startDate,
+      DateTime? endDate,
+      ) {
     String selectedStatus = 'Currently Watching';
 
     showDialog(
@@ -329,65 +348,193 @@ class _UserListScreenState extends State<UserListScreen> {
           builder: (context, setState) {
             return AlertDialog(
               backgroundColor: Colors.grey[900],
-              title: const Text('Change Status'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  MovieListTile(
-                    imagePath: 'assets/images/Movie Poster/Pulp Fiction.png',
-                    title: 'Pulp Fiction',
-                    genre: 'Adventure',
-                    releaseDate: '1994',
-                    imdb: '8.8',
-                  ),
-
-                  const SizedBox(height: 12),
-                  DropdownButton<String>(
-                    value: selectedStatus,
-                    isExpanded: true,
-                    dropdownColor: Colors.grey[900],
-                    items:
-                        [
-                          'Currently Watching',
-                          'Completed',
-                          'Plan to watch',
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedStatus = newValue!;
-                      });
-                    },
-                  ),
-                ],
+              title: const Text('Change Status',
+                  style: TextStyle(color: Colors.white)),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    MovieListTile(
+                      imagePath: imagePath,
+                      title: title,
+                      genre: genres,
+                      releaseDate: releaseYear,
+                      imdb: rating ?? '-',
+                    ),
+                    const SizedBox(height: 12),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('Start Date',
+                          style: TextStyle(
+                              color: Colors.white70, fontSize: 13.sp)),
+                    ),
+                    SizedBox(height: 6.h),
+                    GestureDetector(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: startDate ?? DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100),
+                          builder: (context, child) {
+                            return Theme(
+                              data: ThemeData.dark().copyWith(
+                                colorScheme: const ColorScheme.dark(
+                                  primary: Colors.red,
+                                  onPrimary: Colors.white,
+                                  onSurface: Colors.white,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            startDate = picked;
+                            if (endDate != null && endDate!.isBefore(picked)) {
+                              endDate = null;
+                            }
+                          });
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 14.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.r),
+                          border: Border.all(color: Colors.white24),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              startDate != null
+                                  ? DateFormat('MMM d, yyyy').format(startDate!)
+                                  : 'Select Date',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            Icon(Icons.calendar_today,
+                                size: 18.sp, color: Colors.white70),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.h),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('Date Finished',
+                          style: TextStyle(
+                              color: Colors.white70, fontSize: 13.sp)),
+                    ),
+                    SizedBox(height: 6.h),
+                    GestureDetector(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: endDate ?? (startDate ?? DateTime.now()),
+                          firstDate: startDate ?? DateTime(1900),
+                          lastDate: DateTime(2100),
+                          builder: (context, child) {
+                            return Theme(
+                              data: ThemeData.dark().copyWith(
+                                colorScheme: const ColorScheme.dark(
+                                  primary: Colors.red,
+                                  onPrimary: Colors.white,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
+                        );
+                        if (picked != null) {
+                          setState(() {
+                            endDate = picked;
+                          });
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 14.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.r),
+                          border: Border.all(color: Colors.white24),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              endDate != null
+                                  ? DateFormat('MMM d, yyyy').format(endDate!)
+                                  : 'Select Date',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            Icon(Icons.calendar_today,
+                                size: 18.sp, color: Colors.white70),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButton<String>(
+                      value: selectedStatus,
+                      isExpanded: true,
+                      dropdownColor: Colors.grey[900],
+                      iconEnabledColor: Colors.white,
+                      style:
+                      const TextStyle(color: Colors.white, fontSize: 17),
+                      items: ['Currently Watching', 'Completed', 'Plan to watch']
+                          .map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedStatus = newValue!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Cancel
+                    Navigator.of(context).pop();
                   },
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child:
+                  const Text('Cancel', style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                     elevation: 4,
                   ),
-                  onPressed: () {
-                    print("Selected status: $selectedStatus");
-                    Navigator.of(context).pop(); // Save
+                  onPressed: () async {
+                    if (startDate != null &&
+                        endDate != null &&
+                        endDate!.isBefore(startDate!)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                            Text('End date cannot be before start date')),
+                      );
+                      return;
+                    }
+                    String result = await addMovieToWatchList(
+                        movieId, selectedStatus, startDate, endDate);
+                    Navigator.of(context).pop();
                   },
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
+                  child: const Text('Save',
+                      style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
               ],
             );

@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:Movix/common_widgets/custom_app_bar.dart';
 import '../../core/route_config/route_names.dart';
 
@@ -14,6 +15,7 @@ class UserDashboardScreen extends StatefulWidget {
 
 class _UserDashboardScreenState extends State<UserDashboardScreen> {
   int index = 2;
+  String userName = '';
 
   final Map<String, double> dataMap = {
     "Watched": 5,
@@ -22,6 +24,17 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
   };
 
   final List<Color> colorList = [Colors.red, Colors.green, Colors.cyan];
+
+  @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && user.displayName != null) {
+      userName = user.displayName!;
+    } else {
+      userName = 'User'; // fallback if name is not set
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +71,6 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
 
     return Scaffold(
       appBar: const CustomAppBar(title: "Analytics"),
-
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: Column(
@@ -80,7 +92,7 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
                 ),
                 SizedBox(width: 16.w),
                 Text(
-                  'Hi,\nShreejesh Pathak',
+                  'Hi,\n$userName',
                   style: TextStyle(fontSize: 22.sp, color: Colors.grey[300]),
                 ),
               ],

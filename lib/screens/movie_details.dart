@@ -9,6 +9,7 @@ import '../common_widgets/edit_movie_status.dart';
 
 class MovieDetailsScreen extends StatefulWidget {
   final Movie movie;
+
   const MovieDetailsScreen({super.key, required this.movie});
 
   @override
@@ -20,12 +21,12 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
     _getWatchListInfo();
   }
 
-  void _getWatchListInfo() async{
+  void _getWatchListInfo() async {
     WatchListItem? watchListItem = await findMovieInWatchlist(widget.movie.id);
 
     setState(() {
@@ -40,10 +41,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
     final mins = minutes % 60;
     return '${hours}hr ${mins}m';
   }
+
   String _formatDate(String? date) {
     if (date == null || date.isEmpty) return 'Unknown';
     final parsed = DateTime.tryParse(date);
-    return parsed != null ? DateFormat('MMM d, yyyy').format(parsed) : 'Unknown';
+    return parsed != null
+        ? DateFormat('MMM d, yyyy').format(parsed)
+        : 'Unknown';
   }
 
 
@@ -123,7 +127,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                             ],
                             image: DecorationImage(
                               image: NetworkImage(
-                                'http://image.tmdb.org/t/p/w200/${widget.movie.posterPath}',
+                                'http://image.tmdb.org/t/p/w200/${widget.movie
+                                    .posterPath}',
                               ),
                               fit: BoxFit.cover,
                             ),
@@ -135,7 +140,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.movie.title??'',
+                                widget.movie.title ?? '',
                                 style: TextStyle(
                                   fontSize: 20.sp,
                                   fontWeight: FontWeight.bold,
@@ -152,8 +157,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                               ),
                               SizedBox(height: 6.h),
                               Text(
-                                widget.movie.releaseDate != null && widget.movie.releaseDate!.isNotEmpty
-                                    ? '• ${DateTime.tryParse(widget.movie.releaseDate!)?.year ?? 'Unknown'}'
+                                widget.movie.releaseDate != null &&
+                                    widget.movie.releaseDate!.isNotEmpty
+                                    ? '• ${DateTime
+                                    .tryParse(widget.movie.releaseDate!)
+                                    ?.year ?? 'Unknown'}'
                                     : '• Unknown',
                                 style: TextStyle(
                                   fontSize: 14.sp,
@@ -165,15 +173,17 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                                 children: [
                                   ...List.generate(
                                     5,
-                                        (index) => Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: 18.sp,
-                                    ),
+                                        (index) =>
+                                        Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                          size: 18.sp,
+                                        ),
                                   ),
                                   SizedBox(width: 5.w),
                                   Text(
-                                    widget.movie.voteAverage?.toStringAsFixed(2) ?? '-',
+                                    widget.movie.voteAverage?.toStringAsFixed(
+                                        2) ?? '-',
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       color: Colors.white,
@@ -199,15 +209,18 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                                             content: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Text('Rate this movie from 1 to 10'),
+                                                Text(
+                                                    'Rate this movie from 1 to 10'),
                                                 SizedBox(height: 20),
                                                 Slider(
-                                                  activeColor: Colors.yellowAccent,
+                                                  activeColor: Colors
+                                                      .yellowAccent,
                                                   value: _currentRating,
                                                   min: 1,
                                                   max: 10,
                                                   divisions: 9,
-                                                  label: _currentRating.toStringAsFixed(1),
+                                                  label: _currentRating
+                                                      .toStringAsFixed(1),
                                                   onChanged: (value) {
                                                     setState(() {
                                                       _currentRating = value;
@@ -215,30 +228,47 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                                                   },
                                                 ),
                                                 Text(
-                                                  'Your rating: ${_currentRating.toStringAsFixed(1)}',
-                                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                                  'Your rating: ${_currentRating
+                                                      .toStringAsFixed(1)}',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight
+                                                          .bold),
                                                 ),
                                               ],
                                             ),
                                             actions: [
                                               TextButton(
                                                 onPressed: () {
-                                                  Navigator.of(context).pop(); // Cancel
+                                                  Navigator
+                                                      .of(context)
+                                                      .pop(); // Cancel
                                                 },
-                                                child: Text('Cancel', style: TextStyle(color: Colors.white, fontSize: 14.sp),),
+                                                child: Text('Cancel',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14.sp),),
                                               ),
                                               ElevatedButton(
 
                                                 onPressed: () {
-                                                  Navigator.of(context).pop(); // Close dialog
+                                                  Navigator
+                                                      .of(context)
+                                                      .pop(); // Close dialog
                                                   //For rating logic
-                                                  print('User rated: ${_currentRating.toStringAsFixed(1)}');
+                                                  print(
+                                                      'User rated: ${_currentRating
+                                                          .toStringAsFixed(
+                                                          1)}');
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.redAccent,
+                                                  backgroundColor: Colors
+                                                      .redAccent,
                                                 ),
 
-                                                child: Text('Submit', style: TextStyle(color: Colors.white,fontSize: 14.sp),),
+                                                child: Text('Submit',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14.sp),),
                                               ),
                                             ],
                                           );
@@ -267,11 +297,13 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
                     Row(
                       children: [
-                        Icon(Icons.schedule, color: Colors.white70, size: 20.sp),
+                        Icon(
+                            Icons.schedule, color: Colors.white70, size: 20.sp),
                         SizedBox(width: 8.w),
                         Text(
                           _formatRuntime(widget.movie.runtime),
-                          style: TextStyle(color: Colors.white70, fontSize: 14.sp),
+                          style: TextStyle(color: Colors.white70, fontSize: 14
+                              .sp),
                         ),
                       ],
                     ),
@@ -279,7 +311,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
 
                     Text(
-                      widget.movie.overview ??'',
+                      widget.movie.overview ?? '',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.sp,
@@ -305,6 +337,18 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       "Release Date: ${_formatDate(widget.movie.releaseDate)}",
                       style: TextStyle(color: Colors.white70, fontSize: 13.sp),
                     ),
+                    SizedBox(height: 8.h),
+                    Text("Origin Country: ${widget.movie.originCountry?.join(
+                        ', ') ?? 'N/A' }",
+                      style: TextStyle(
+                          color: Colors.white70, fontSize: 13.sp),),
+
+                    SizedBox(height: 8.h,),
+
+                    Text("Production House: ${widget.movie.productionCompanies?.join('') ?? "N/A"}",
+                      style: TextStyle(
+                          color: Colors.white70, fontSize: 13.sp),
+                    ),
                     SizedBox(height: 20.h),
 
 
@@ -312,7 +356,6 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                 ),
 
               ),
-
 
 
             ),
@@ -323,11 +366,14 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
         backgroundColor: Colors.red,
         shape: CircleBorder(),
         onPressed: _editButtonAction,
-        child: watchListInfo == null? Icon(Icons.add, size: 28.sp, color: Colors.white) : Icon(Icons.edit_outlined, size: 28.sp, color: Colors.white),
+        child: watchListInfo == null ? Icon(
+            Icons.add, size: 28.sp, color: Colors.white) : Icon(
+            Icons.edit_outlined, size: 28.sp, color: Colors.white),
       ),
 
     );
   }
+
   void _editButtonAction() {
     String selectedStatus = 'Currently Watching';
     DateTime? _startDate;
@@ -340,13 +386,15 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
           builder: (context, setState) {
             return AlertDialog(
               backgroundColor: Colors.grey[900],
-              title: const Text('Change Status', style: TextStyle(color: Colors.white)),
+              title: const Text(
+                  'Change Status', style: TextStyle(color: Colors.white)),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     MovieListTile(
-                      imagePath: 'http://image.tmdb.org/t/p/w200/${widget.movie.posterPath}',
+                      imagePath: 'http://image.tmdb.org/t/p/w200/${widget.movie
+                          .posterPath}',
                       title: widget.movie.title ?? '',
                       genre: (widget.movie.genres ?? []).join('/'),
                       releaseDate: '2025',
@@ -358,7 +406,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                     // START DATE Field
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('Start Date', style: TextStyle(color: Colors.white70, fontSize: 13.sp)),
+                      child: Text('Start Date', style: TextStyle(color: Colors
+                          .white70, fontSize: 13.sp)),
                     ),
                     SizedBox(height: 6.h),
                     GestureDetector(
@@ -374,7 +423,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                                 colorScheme: const ColorScheme.dark(
                                   primary: Colors.red,
                                   onPrimary: Colors.white,
-                                    onSurface: Colors.white,
+                                  onSurface: Colors.white,
                                 ),
                               ),
                               child: child!,
@@ -386,14 +435,16 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                           setState(() {
                             _startDate = picked;
                             // Optional: Reset end date if it is before new start date
-                            if (_endDate != null && _endDate!.isBefore(picked)) {
+                            if (_endDate != null &&
+                                _endDate!.isBefore(picked)) {
                               _endDate = null;
                             }
                           });
                         }
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+                        padding: EdgeInsets.symmetric(horizontal: 12.w,
+                            vertical: 14.h),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.r),
                           border: Border.all(color: Colors.white24),
@@ -403,14 +454,16 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                           children: [
                             Text(
                               _startDate != null
-                                  ? DateFormat('MMM d, yyyy').format(_startDate!)
+                                  ? DateFormat('MMM d, yyyy').format(
+                                  _startDate!)
                                   : 'Select Date',
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 14.sp,
                               ),
                             ),
-                            Icon(Icons.calendar_today, size: 18.sp, color: Colors.white70),
+                            Icon(Icons.calendar_today, size: 18.sp,
+                                color: Colors.white70),
                           ],
                         ),
                       ),
@@ -418,17 +471,20 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
 
                     SizedBox(height: 16.h),
 
-                    // 🔹 END DATE Field
+                    //  END DATE Field
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('Date Finished', style: TextStyle(color: Colors.white70, fontSize: 13.sp)),
+                      child: Text(
+                          'Date Finished', style: TextStyle(color: Colors
+                          .white70, fontSize: 13.sp)),
                     ),
                     SizedBox(height: 6.h),
                     GestureDetector(
                       onTap: () async {
                         final picked = await showDatePicker(
                           context: context,
-                          initialDate: _endDate ?? (_startDate ?? DateTime.now()),
+                          initialDate: _endDate ??
+                              (_startDate ?? DateTime.now()),
                           firstDate: _startDate ?? DateTime(1900),
                           lastDate: DateTime(2100),
                           builder: (context, child) {
@@ -453,7 +509,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                         }
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+                        padding: EdgeInsets.symmetric(horizontal: 12.w,
+                            vertical: 14.h),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.r),
                           border: Border.all(color: Colors.white24),
@@ -470,7 +527,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                                 fontSize: 14.sp,
                               ),
                             ),
-                            Icon(Icons.calendar_today, size: 18.sp, color: Colors.white70),
+                            Icon(Icons.calendar_today, size: 18.sp,
+                                color: Colors.white70),
                           ],
                         ),
                       ),
@@ -485,7 +543,11 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       dropdownColor: Colors.grey[900],
                       iconEnabledColor: Colors.white,
                       style: const TextStyle(color: Colors.white, fontSize: 17),
-                      items: ['Currently Watching', 'Completed', 'Plan to watch']
+                      items: [
+                        'Currently Watching',
+                        'Completed',
+                        'Plan to watch'
+                      ]
                           .map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -506,7 +568,8 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   onPressed: () {
                     Navigator.of(context).pop(); // Cancel
                   },
-                  child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                      'Cancel', style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -515,18 +578,22 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                   ),
                   onPressed: () async {
                     // Validation before saving
-                    if (_startDate != null && _endDate != null && _endDate!.isBefore(_startDate!)) {
+                    if (_startDate != null && _endDate != null &&
+                        _endDate!.isBefore(_startDate!)) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('End date cannot be before start date')),
+                        SnackBar(content: Text(
+                            'End date cannot be before start date')),
                       );
                       return;
                     }
 
-                    String result = await addMovieToWatchList(widget.movie.id, selectedStatus, _startDate, _endDate);
+                    String result = await addMovieToWatchList(
+                        widget.movie.id, selectedStatus, _startDate, _endDate);
 
                     Navigator.of(context).pop(); // Save and close
                   },
-                  child: const Text('Save', style: TextStyle(color: Colors.white, fontSize: 18)),
+                  child: const Text('Save',
+                      style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
               ],
             );
@@ -535,7 +602,6 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
       },
     );
   }
-
 
 
 }

@@ -142,6 +142,7 @@ Future<List<Movie>> getRecommendedMovies() async {
       final data = jsonDecode(response.body);
 
       final List<dynamic> moviesJson = data['data'];
+      print(moviesJson[0]['production_companies']);
       final movies = moviesJson.map((json) => Movie.fromJson(json)).toList();
 
       // cache

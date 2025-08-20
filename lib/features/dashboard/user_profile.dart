@@ -12,7 +12,6 @@ import '../../core/route_config/route_names.dart';
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
 
-
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
@@ -21,76 +20,62 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   int index = 3;
   bool isLoading = false;
 
+  // Firebase user info
+  String userName = '';
+  String userEmail = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  void _loadUserInfo() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        userName = user.displayName ?? 'User';
+        userEmail = user.email ?? '';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[
-      Icon(
-        Icons.home,
-        size: 30,
-        color: index == 0 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
-      ),
-      Icon(
-        Icons.list,
-        size: 30,
-        color: index == 1 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
-      ),
-      Icon(
-        Icons.graphic_eq_outlined,
-        size: 30,
-        color: index == 2
-            ? Colors.red
-            : const Color.fromRGBO(121, 116, 126, 1.0),
-      ),
-      Icon(
-        Icons.person,
-        size: 30,
-        color: index == 3 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0),
-      ),
+      Icon(Icons.home, size: 30, color: index == 0 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0)),
+      Icon(Icons.list, size: 30, color: index == 1 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0)),
+      Icon(Icons.graphic_eq_outlined, size: 30, color: index == 2 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0)),
+      Icon(Icons.person, size: 30, color: index == 3 ? Colors.red : Color.fromRGBO(121, 116, 126, 1.0)),
     ];
+
     return Scaffold(
       extendBody: true,
       appBar: CustomAppBar(title: "My Profile"),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(child: Column(children: [_profile()])),
-
-          _editProfileButton(
-            'Edit Profile',
-            Icons.mode_edit_outline_outlined,
-                () {
-              _showEditProfileDialog();
-            },
-          ),
-          _editProfileButton(
-            'Content Preference',
-            Icons.menu_book_outlined,
-                () {
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(vertical: 16.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _profile(),
+            _editProfileButton('Edit Profile', Icons.mode_edit_outline_outlined, _showEditProfileDialog),
+            _editProfileButton('Content Preference', Icons.menu_book_outlined, () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                  const GenreSelectionScreen(fromSettings: true),
+                  builder: (context) => const GenreSelectionScreen(fromSettings: true),
                 ),
               );
-            },
-          ),
-          _editProfileButton('Change Password', Icons.password_outlined, () {
-            _showChangePasswordDialog();
-          }),
-
-          _editProfileButton("Light Mode", CupertinoIcons.moon, () {
-            Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-          }),
-
-          //LogOut Button
-          _editProfileButton('Log out', Icons.exit_to_app, () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => _logout(),
-            );
-          }),
-        ],
+            }),
+            _editProfileButton('Change Password', Icons.password_outlined, _showChangePasswordDialog),
+            _editProfileButton("Light Mode", CupertinoIcons.moon, () {
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+            }),
+            _editProfileButton('Log out', Icons.exit_to_app, () {
+              showDialog(context: context, builder: (context) => _logout());
+            }),
+          ],
+        ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         height: 65.h,
@@ -99,11 +84,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         color: Color.fromRGBO(35, 35, 35, 1.0),
         buttonBackgroundColor: Color.fromRGBO(35, 35, 35, 1.0),
         animationDuration: Duration(milliseconds: 400),
-
         items: items,
         onTap: (newIndex) {
           setState(() => index = newIndex);
-
           switch (newIndex) {
             case 0:
               Navigator.pushNamed(context, RouteName.homeScreen);
@@ -116,8 +99,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               break;
             case 3:
               break;
-            default:
-            // Do nothing or stay on home
           }
         },
       ),
@@ -144,15 +125,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
           ),
           SizedBox(height: 12.h),
-          Text(
-            "Shreejesh Pathak",
-            style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold),
-          ),
+          Text(userName, style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold)),
           SizedBox(height: 4.h),
-          Text(
-            "shreejeshpathak@gmail.com",
-            style: TextStyle(fontSize: 13.sp, color: Colors.grey),
-          ),
+          Text(userEmail, style: TextStyle(fontSize: 13.sp, color: Colors.grey)),
         ],
       ),
     );
@@ -173,14 +148,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              text,
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            Text(text, style: TextStyle(color: Colors.red, fontSize: 20.sp, fontWeight: FontWeight.w500)),
             Icon(icon, color: Colors.grey[600], size: 30.sp),
           ],
         ),
@@ -189,116 +157,178 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _showEditProfileDialog() {
+    final user = FirebaseAuth.instance.currentUser;
+    TextEditingController nameController = TextEditingController(text: userName);
+    TextEditingController emailController = TextEditingController(text: userEmail);
+    String? errorText;
+
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        TextEditingController nameController = TextEditingController(
-          text: "Shreejesh Pathak",
-        );
-        TextEditingController emailController = TextEditingController(
-          text: "shreejeshpathak@gmail.com",
-        );
-
-        String?
-        errorText; // For showing a single error (or use Form for more control)
-
+      builder: (context) {
         return StatefulBuilder(
-          // Needed to update dialog UI
-          builder: (context, setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              backgroundColor: const Color(0xFF1E1E1E),
-              title: Text(
-                'Edit Profile',
-                style: TextStyle(color: Colors.white, fontSize: 20.sp),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (errorText != null)
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 10.h),
-                      child: Text(
-                        errorText!,
-                        style: TextStyle(color: Colors.red, fontSize: 14.sp),
-                      ),
-                    ),
-                  TextField(
-                    controller: nameController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Full Name',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                    ),
+          builder: (context, setState) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+            backgroundColor: const Color(0xFF1E1E1E),
+            title: Text('Edit Profile', style: TextStyle(color: Colors.white, fontSize: 20.sp)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (errorText != null)
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10.h),
+                    child: Text(errorText!, style: TextStyle(color: Colors.red, fontSize: 14.sp)),
                   ),
-                  SizedBox(height: 12.h),
-                  TextField(
-                    controller: emailController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey.shade700),
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.grey[400]),
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    shape: RoundedRectangleBorder(
+                TextField(
+                  controller: nameController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'Full Name',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey.shade700),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
-                  child: const Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(height: 12.h),
+                TextField(
+                  controller: emailController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey.shade700),
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
                   ),
-                  onPressed: () {
-                    String name = nameController.text.trim();
-                    String email = emailController.text.trim();
-
-                    // Validation logic
-                    if (name.isEmpty || email.isEmpty) {
-                      setState(() {
-                        errorText = "All fields are required.";
-                      });
-                      return;
-                    }
-                    final RegExp gmailRegex = RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$',
-                    );
-                    if (!gmailRegex.hasMatch(email)) {
-                      setState(() {
-                        errorText = "Enter a valid Email ";
-                      });
-                      return;
-                    }
-                    // If validation passes
-                    Navigator.of(context).pop();
-
-                  },
                 ),
               ],
-            );
-          },
+            ),
+            actions: [
+              TextButton(
+                child: Text('Cancel', style: TextStyle(color: Colors.grey[400])),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                ),
+                child: const Text('Save', style: TextStyle(color: Colors.white)),
+                onPressed: () async {
+                  String newName = nameController.text.trim();
+                  String newEmail = emailController.text.trim();
+
+                  if (newName.isEmpty || newEmail.isEmpty) {
+                    setState(() => errorText = "All fields are required.");
+                    return;
+                  }
+
+                  try {
+                    // Update Firebase Auth
+                    if (user != null) {
+                      if (user.displayName != newName) await user.updateDisplayName(newName);
+                      if (user.email != newEmail) await user.updateEmail(newEmail);
+                      await user.reload();
+                    }
+
+                    setState(() {
+                      userName = newName;
+                      userEmail = newEmail;
+                    });
+
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Profile updated successfully"), backgroundColor: Colors.green),
+                    );
+                  } on FirebaseAuthException catch (e) {
+                    setState(() => errorText = e.message);
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showChangePasswordDialog() {
+    TextEditingController currentPass = TextEditingController();
+    TextEditingController newPass = TextEditingController();
+    TextEditingController confirmPass = TextEditingController();
+    String? errorText;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+            backgroundColor: const Color(0xFF1E1E1E),
+            title: Text('Change Password', style: TextStyle(color: Colors.white, fontSize: 20.sp)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (errorText != null) Padding(
+                  padding: EdgeInsets.only(bottom: 10.h),
+                  child: Text(errorText!, style: TextStyle(color: Colors.red, fontSize: 14.sp)),
+                ),
+                TextField(controller: currentPass, obscureText: true, style: const TextStyle(color: Colors.white), decoration: InputDecoration(hintText: 'Current Password', hintStyle: const TextStyle(color: Colors.grey))),
+                SizedBox(height: 12.h),
+                TextField(controller: newPass, obscureText: true, style: const TextStyle(color: Colors.white), decoration: InputDecoration(hintText: 'New Password', hintStyle: const TextStyle(color: Colors.grey))),
+                SizedBox(height: 12.h),
+                TextField(controller: confirmPass, obscureText: true, style: const TextStyle(color: Colors.white), decoration: InputDecoration(hintText: 'Confirm New Password', hintStyle: const TextStyle(color: Colors.grey))),
+              ],
+            ),
+            actions: [
+              TextButton(child: Text('Cancel', style: TextStyle(color: Colors.grey[400])), onPressed: () => Navigator.of(context).pop()),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r))),
+                child: isLoading ? SizedBox(width: 20.w, height: 20.w, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Text('Save', style: TextStyle(color: Colors.white)),
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                  String curr = currentPass.text.trim();
+                  String newP = newPass.text.trim();
+                  String confirmP = confirmPass.text.trim();
+
+                  if (curr.isEmpty || newP.isEmpty || confirmP.isEmpty) {
+                    setState(() => errorText = "All fields are required.");
+                    return;
+                  }
+                  if (newP.length < 6) {
+                    setState(() => errorText = "Password must be at least 6 characters.");
+                    return;
+                  }
+                  if (newP != confirmP) {
+                    setState(() => errorText = "Passwords do not match.");
+                    return;
+                  }
+
+                  try {
+                    setState(() => isLoading = true);
+                    User? user = FirebaseAuth.instance.currentUser;
+                    AuthCredential cred = EmailAuthProvider.credential(email: user!.email!, password: curr);
+                    await user.reauthenticateWithCredential(cred);
+                    await user.updatePassword(newP);
+                    await user.reload();
+                    setState(() => isLoading = false);
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password changed successfully"), backgroundColor: Colors.green));
+                  } on FirebaseAuthException catch (e) {
+                    setState(() {
+                      isLoading = false;
+                      if (e.code == 'wrong-password') errorText = "Current password is incorrect.";
+                      else if (e.code == 'requires-recent-login') errorText = "Please log in again and try.";
+                      else errorText = "Error: ${e.message}";
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
         );
       },
     );
@@ -308,236 +338,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
       backgroundColor: const Color(0xFF1E1E1E),
-      title: Text(
-        "Are you sure?",
-        style: TextStyle(
-          fontSize: 20.sp,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Text(
-        "Do you really want to log out?",
-        style: TextStyle(fontSize: 16.sp, color: Colors.grey[400]),
-      ),
+      title: Text("Are you sure?", style: TextStyle(fontSize: 20.sp, color: Colors.white, fontWeight: FontWeight.bold)),
+      content: Text("Do you really want to log out?", style: TextStyle(fontSize: 16.sp, color: Colors.grey[400])),
       actions: [
-        TextButton(
-          child: Text(
-            "Cancel",
-            style: TextStyle(color: Colors.grey[400], fontSize: 16.sp),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop(); // close the dialog
-          },
-        ),
+        TextButton(child: Text("Cancel", style: TextStyle(color: Colors.grey[400], fontSize: 16.sp)), onPressed: () => Navigator.of(context).pop()),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-          ),
-          child: Text(
-            "Log out",
-            style: TextStyle(color: Colors.white, fontSize: 16.sp),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop(); // close dialog
-            Navigator.pushNamed(context, AuthRouteName.loginScreen); // navigate
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+          child: Text("Log out", style: TextStyle(color: Colors.white, fontSize: 16.sp)),
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            Navigator.pushNamedAndRemoveUntil(context, AuthRouteName.loginScreen, (route) => false);
           },
         ),
       ],
-    );
-  }
-
-  void _showChangePasswordDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController currentPasswordController =
-        TextEditingController();
-        TextEditingController newPasswordController = TextEditingController();
-        TextEditingController confirmPasswordController =
-        TextEditingController();
-
-        String? errorText;
-
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              backgroundColor: const Color(0xFF1E1E1E),
-              title: Text(
-                'Change Password',
-                style: TextStyle(color: Colors.white, fontSize: 20.sp),
-              ),
-              content: Container(
-                width: 350.w,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (errorText != null)
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 10.h),
-                        child: Text(
-                          errorText!,
-                          style: TextStyle(color: Colors.red, fontSize: 14.sp),
-                        ),
-                      ),
-                    TextField(
-                      controller: currentPasswordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Current Password',
-                        hintStyle: const TextStyle(color: Colors.grey),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade700),
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                    TextField(
-                      controller: newPasswordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'New Password',
-                        hintStyle: const TextStyle(color: Colors.grey),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade700),
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                    TextField(
-                      controller: confirmPasswordController,
-                      obscureText: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Confirm New Password',
-                        hintStyle: const TextStyle(color: Colors.grey),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade700),
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.grey[400]),
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                  ),
-                  child: isLoading
-                      ? SizedBox(
-                    width: 20.w,
-                    height: 20.w,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                      : const Text(
-                    'Save',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onPressed: isLoading
-                      ? null
-                      : () async {
-                    String currentPass = currentPasswordController.text.trim();
-                    String newPass = newPasswordController.text.trim();
-                    String confirmPass = confirmPasswordController.text.trim();
-
-                    if (currentPass.isEmpty || newPass.isEmpty || confirmPass.isEmpty) {
-                      setState(() => errorText = "All fields are required.");
-                      return;
-                    }
-
-                    if (newPass.length < 6) {
-                      setState(() => errorText = "Password must be at least 6 characters.");
-                      return;
-                    }
-
-                    if (newPass != confirmPass) {
-                      setState(() => errorText = "Passwords do not match.");
-                      return;
-                    }
-
-                    try {
-                      setState(() {
-                        isLoading = true;
-                        errorText = null;
-                      });
-
-                      User? user = FirebaseAuth.instance.currentUser;
-
-                      // Re-authenticate
-                      AuthCredential credential = EmailAuthProvider.credential(
-                        email: user!.email!,
-                        password: currentPass,
-                      );
-                      await user.reauthenticateWithCredential(credential);
-
-                      // Update password
-                      await user.updatePassword(newPass);
-
-
-                      Future.delayed(const Duration(seconds: 3), () {
-                        if (mounted) {
-                          setState(() => isLoading = false);
-                          Navigator.of(context).pop();
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Password changed successfully"),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        }
-                      });
-                    } on FirebaseAuthException catch (e) {
-                      setState(() {
-                        isLoading = false;
-                        if (e.code == 'wrong-password') {
-                          errorText = "Current password is incorrect.";
-                        } else if (e.code == 'requires-recent-login') {
-                          errorText = "Please log in again and try.";
-                        } else {
-                          errorText = "Error: ${e.message}";
-                        }
-                      });
-                    } catch (e) {
-                      setState(() {
-                        isLoading = false;
-                        errorText = "Something went wrong. Try again.";
-                      });
-                    }
-                  },
-
-                )
-
-              ],
-            );
-          },
-        );
-      },
     );
   }
 }

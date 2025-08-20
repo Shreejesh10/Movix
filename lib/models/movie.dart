@@ -1,6 +1,6 @@
 import './watchlist.dart';
 
-class Movie{
+class Movie {
   int id;
   bool? adult;
   String? backdropPath;
@@ -24,6 +24,7 @@ class Movie{
   int? runtime;
   String? tagline;
   WatchListItem? watchListInfo;
+  List<String>? productionCompanies;
 
   Movie({
     required this.id,
@@ -48,7 +49,8 @@ class Movie{
     this.originCountry,
     this.runtime,
     this.tagline,
-    this.watchListInfo
+    this.watchListInfo,
+    this.productionCompanies,
   });
 
   // Factory constructor
@@ -57,7 +59,9 @@ class Movie{
       id: json['id'] ?? 0,
       adult: json['adult'],
       backdropPath: json['backdrop_path'],
-      genreIds: json['genre_ids'] != null ? List<int>.from(json['genre_ids']) : null,
+      genreIds: json['genre_ids'] != null
+          ? List<int>.from(json['genre_ids'])
+          : null,
       originalLanguage: json['original_language'],
       originalTitle: json['original_title'],
       overview: json['overview'],
@@ -68,7 +72,9 @@ class Movie{
       video: json['video'],
       voteAverage: (json['vote_average'] as num?)?.toDouble(),
       voteCount: json['vote_count'],
-      genreVector: json['genre_vector'] != null ? List<int>.from(json['genre_vector']) : null,
+      genreVector: json['genre_vector'] != null
+          ? List<int>.from(json['genre_vector'])
+          : null,
       genres: json['genreNames'] != null
           ? List<String>.from(json['genreNames'].map((g) => g.toString()))
           : null,
@@ -81,7 +87,13 @@ class Movie{
       runtime: json['runtime'],
       tagline: json['tagline'],
       watchListInfo: json['watchListInfo'] != null
-        ? WatchListItem.fromJson(json['watchListInfo']) : null
+          ? WatchListItem.fromJson(json['watchListInfo'])
+          : null,
+      productionCompanies: json['production_companies'] != null
+          ? List<String>.from(
+              json['production_companies'].map((c) => c['name'].toString()),
+            )
+          : null,
     );
   }
 }

@@ -185,7 +185,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   children: [
                     Text('Forgot password?', style: TextStyle(fontSize: 15.sp)),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, RouteName.forgotPasswordScreen);
+                      },
                       child: Text(
                         'Reset now?',
                         style: TextStyle(
