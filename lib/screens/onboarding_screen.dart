@@ -188,6 +188,7 @@ class _GenreSelectionScreenState extends State<GenreSelectionScreen> {
 
                             // Navigate
                             if (!widget.fromSettings) {
+                              await updateUserPreferences(selectedGenres);
                               Navigator.pushNamed(
                                 context,
                                 RouteName.homeScreen,

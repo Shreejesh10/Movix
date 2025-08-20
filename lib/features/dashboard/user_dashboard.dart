@@ -5,6 +5,8 @@ import 'package:pie_chart/pie_chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:Movix/common_widgets/custom_app_bar.dart';
 import '../../core/route_config/route_names.dart';
+import 'package:Movix/models/userStatistics.dart';
+import 'package:Movix/api/api.dart';
 
 class UserDashboardScreen extends StatefulWidget {
   const UserDashboardScreen({super.key});
@@ -16,12 +18,15 @@ class UserDashboardScreen extends StatefulWidget {
 class _UserDashboardScreenState extends State<UserDashboardScreen> {
   int index = 2;
   String userName = '';
+  bool loading = false;
 
-  final Map<String, double> dataMap = {
-    "Watched": 5,
-    "Watching": 2,
-    "Planned": 3,
+  Map<String, double> dataMap = {
+    "Watched": 0,
+    "Watching": 0,
+    "Planned": 0,
   };
+
+  UserStatistic? stats;
 
   final List<Color> colorList = [Colors.red, Colors.green, Colors.cyan];
 
@@ -34,6 +39,18 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
     } else {
       userName = 'User'; // fallback if name is not set
     }
+    _loadData();
+  }
+
+  void _loadData() async {
+    UserStatistic data = await getUserStatistic();
+
+    setState(() {
+      stats = data;
+      dataMap['Watched'] = data.completedCount.toDouble();
+      dataMap['Watching'] = data.watchingCount.toDouble();
+      dataMap['Planned'] = data.plannedCount.toDouble();
+    });
   }
 
   @override
@@ -103,13 +120,13 @@ class _UserDashboardScreenState extends State<UserDashboardScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _infoCard("Time Watched", '0m'),
-                _infoCard('Total Movie Watched', '0'),
+                _infoCard("Time Watched", '${stats?.minutesWatched}m'),
+                _infoCard('Total Movie Watched', '${stats?.completedCount}'),
               ],
             ),
             SizedBox(height: 16.h),
 
-            _infoCard("Total Planned to Watch Movies", "0", fullWidth: true),
+            _infoCard("Total Planned to Watch Movies", "${stats?.plannedCount}", fullWidth: true),
 
             SizedBox(height: 24.h),
 

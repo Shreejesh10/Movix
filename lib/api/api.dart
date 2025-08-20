@@ -1,4 +1,5 @@
 import 'package:Movix/constants.dart';
+import 'package:Movix/models/userStatistics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -289,5 +290,29 @@ Future<WatchListItem?> findMovieInWatchlist(int movieId) async{
   } catch (e) {
     log("Error while fetching watchlist: $e");
     return null;
+  }
+}
+
+Future<UserStatistic> getUserStatistic() async{
+  try {
+    final firebaseUid = getUserId();
+    if (firebaseUid == null) {
+      log("Error: Failed to get userID");
+      throw "Failed to get userID";
+    }
+
+    final url = Uri.parse("$API_URL/user/get_user_statistics/$firebaseUid");
+    final headers = await getHeaders();
+
+    log("Fetching user statistic at $url");
+    final response = await http.get(url, headers: headers);
+    final responseJson = jsonDecode(response.body);
+    final data = responseJson['data'];
+
+    return UserStatistic(minutesWatched: data['minutes_watched'], completedCount: data['completed_count'], plannedCount: data['planned_count'], watchingCount: data['watching_count']);
+
+  } catch (e) {
+    log("Error while fetching watchlist: $e");
+    return UserStatistic(minutesWatched: 0, completedCount: 0, plannedCount: 0, watchingCount: 0);
   }
 }
