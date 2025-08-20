@@ -185,3 +185,34 @@ Future<List<Movie>> getPopularMovies() async {
     return [];
   }
 }
+
+Future<List<WatchListItem>> getWatchList() async{
+  try {
+    final firebaseUid = getUserId();
+    if (firebaseUid == null) {
+      log("Error: Failed to get userID");
+      return [];
+    }
+
+    final url = Uri.parse("$API_URL/user/get_watchlist/$firebaseUid");
+    final headers = await getHeaders();
+
+    log("Making watchlist request to $url");
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      final List<dynamic> watchListJson = data['data'];
+      final watchList = watchListJson.map((json) => WatchListItem.fromJson(json)).toList();
+
+      return watchList;
+    } else {
+      log("Error fetching watchList: ${response.statusCode}");
+      return [];
+    }
+  } catch (e) {
+    log("Error while fetching watchlist: $e");
+    return [];
+  }
+}

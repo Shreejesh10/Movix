@@ -6,6 +6,8 @@ import 'package:Movix/common_widgets/edit_movie_status.dart';
 import 'package:Movix/common_widgets/genre_selection.dart';
 import '../common_widgets/custom_app_bar.dart';
 import '../core/route_config/route_names.dart';
+import 'package:Movix/models/allModels.dart';
+import 'package:Movix/api/api.dart';
 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
@@ -17,10 +19,12 @@ class UserListScreen extends StatefulWidget {
 class _UserListScreenState extends State<UserListScreen> {
   int index = 1;
   final ScrollController _scrollController = ScrollController();
+  List<WatchListItem> watchList = [];
+  List<WatchListItem> filteredWatchList = [];
 
   @override
   void dispose() {
-    _scrollController.dispose(); // <-- Dispose the controller
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -30,6 +34,30 @@ class _UserListScreenState extends State<UserListScreen> {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    _loadWatchList();
+  }
+
+  void _filterWatchList(String type) {
+    final filteredMovies = watchList.where((item) => item.type == type).toList();
+
+    setState(() {
+      filteredWatchList = filteredMovies;
+    });
+  }
+
+  void _loadWatchList() async {
+    final watchListData = await getWatchList();
+
+    setState(() {
+      watchList = watchListData;
+    });
+
+    _filterWatchList('Watching');
   }
 
   @override
@@ -76,100 +104,24 @@ class _UserListScreenState extends State<UserListScreen> {
               const SearchFilterBar(),
               SizedBox(height: 15.h),
               GenreSelector(
-                genres: ["Watching", 'Completed', 'Plan to Watch'],
-                onGenreSelected: (genre) {},
+                genres: ['Watching', 'Completed', 'Plan To Watch'],
+                onGenreSelected: (genre) {
+                  _filterWatchList(genre);
+                },
               ),
               SizedBox(height: 18.h),
-              _movielist(
-                'assets/images/Movie Poster/Pulp Fiction.png',
-                'Pulp Fiction',
-                'Crime/Drama',
-                '1994',
-                '8.9',
-                0.1,
-                1,
-                1,
-              ),
-              _movielist(
-                'assets/images/Movie Poster/ted.png',
-                'Ted',
-                'Comedy/Fantasy',
-                '2012',
-                '6.9',
-                1,
-                1,
-                1,
-              ),
-              _movielist(
-                'assets/images/Movie Poster/romeo.png',
-                'Romeo + Juliet',
-                'Drama/Romance',
-                '1996',
-                '6.8',
-                1,
-                1,
-                1,
-              ),
-              _movielist(
-                'assets/images/Movie Poster/Forestgump.jpg',
-                'Forrest Gump',
-                'Drama/Romance',
-                '1994',
-                '8.8',
-                0.1,
-                1,
-                1,
-              ),
-              _movielist(
-                'assets/images/Movie Poster/F1.jpg',
-                'F1',
-                'Action/Sport',
-                '2025',
-                '8.5',
-                0.1,
-                1,
-                1,
-              ),
-              _movielist(
-                'assets/images/Movie Poster/SpiderMan.png',
-                'Spider-Man: Into the Spider-Verse',
-                'Animation/Action',
-                '2018',
-                '8.4',
-                0.1,
-                0,
-                1,
-              ),
-              _movielist(
-                'assets/images/Movie Poster/great gatsby.png',
-                'The Great Gatsby',
-                'Drama/Romance',
-                '2013',
-                '7.2',
-                0.1,
-                1,
-                1,
-              ),
-              _movielist(
-                'assets/images/Movie Poster/pandorum.jpg',
-                'Pandorum',
-                'Horror/Sci-fi',
-                '2009',
-                '6.7',
-                0.1,
-                1,
-                1,
-              ),
-              _movielist(
-                'assets/images/Movie Poster/Shawshank.jpg',
-                'The Shawshank Redemption',
-                'Drama/Prison',
-                '1994',
-                '9.3',
-                1,
-                1,
-                1,
-              ),
+              ...filteredWatchList.map((item) {
+                return _movielist(
+                  'http://image.tmdb.org/t/p/w200/${item.movie?.posterPath}',
+                  item.movie?.title??'',
+                  item.movie?.genres?.join('/')??'',
+                  item.movie?.releaseDate?.split('-')[0]??'',
+                  item.movie?.voteAverage?.toString() ?? '',
+                  item.type != 'Completed' ? 0 : 1,
+                  item.type != 'Completed' ? 0 : 1,
+                  1
+                );
+              }),
             ],
           ),
         ),
@@ -246,7 +198,7 @@ class _UserListScreenState extends State<UserListScreen> {
                 child: SizedBox(
                   height: 120.h,
                   width: 90.w,
-                  child: Image.asset(imagePath, fit: BoxFit.cover),
+                  child: Image.network(imagePath, fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -271,6 +223,8 @@ class _UserListScreenState extends State<UserListScreen> {
                     SizedBox(height: 4.h),
                     Text(
                       genre,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(fontSize: 14.sp, color: Colors.grey),
                     ),
                     SizedBox(height: 2.h),
@@ -396,7 +350,6 @@ class _UserListScreenState extends State<UserListScreen> {
                         [
                           'Currently Watching',
                           'Completed',
-                          'On hold',
                           'Plan to watch',
                         ].map((String value) {
                           return DropdownMenuItem<String>(
