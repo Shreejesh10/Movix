@@ -191,7 +191,7 @@ class _UserListScreenState extends State<UserListScreen> {
       child: InkWell(
         onTap: () {
           Navigator.pushNamed(context, RouteName.movieDetailScreen,
-              arguments: movie);
+              arguments: item.movie);
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

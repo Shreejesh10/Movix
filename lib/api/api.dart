@@ -238,7 +238,7 @@ Future<String> addMovieToWatchList(
     final body = jsonEncode({
       'firebase_user_id': firebaseUid,
       'movie_id': movieId,
-      'status': type == "Currently Watching" ? "Watching" : type == "Plan to Watch" ? "Plan To Watch" : "Completed",
+      'status': type.toLowerCase() == "currently watching" ? "Watching" : type.toLowerCase() == "plan to watch" ? "Plan To Watch" : "Completed",
       'startDate': startDate?.toIso8601String(),
       'endDate': endDate?.toIso8601String()
     });

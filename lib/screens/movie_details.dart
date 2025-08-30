@@ -375,7 +375,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
   }
 
   void _editButtonAction() {
-    String selectedStatus = 'Currently Watching';
+    String selectedStatus = 'Currently watching';
     DateTime? _startDate;
     DateTime? _endDate;
 
@@ -544,7 +544,7 @@ class _MovieDetailsScreenState extends State<MovieDetailsScreen> {
                       iconEnabledColor: Colors.white,
                       style: const TextStyle(color: Colors.white, fontSize: 17),
                       items: [
-                        'Currently Watching',
+                        'Currently watching',
                         'Completed',
                         'Plan to watch'
                       ]
