@@ -18,7 +18,7 @@ class RecommenderApp extends StatelessWidget {
     return MultiProvider(
       providers: [ChangeNotifierProvider(create: (ctx) => ThemeProvider())],
       child: ScreenUtilInit(
-        designSize: const Size(375, 812), // optional, adjust as per your design
+        designSize: const Size(375, 812),
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {

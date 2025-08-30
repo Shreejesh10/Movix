@@ -59,12 +59,14 @@ class _HomeScreenState extends State<HomeScreen>
     dynamic cachedUidValue = await CacheService.getValue("currentUserUid");
     String? cachedUid = cachedUidValue?.toString();
 
-    dynamic cachedRecommendedValue =
-    await CacheService.getValue("recommendedMovies");
+    dynamic cachedRecommendedValue = await CacheService.getValue(
+      "recommendedMovies",
+    );
     dynamic cachedPopularValue = await CacheService.getValue("popularMovies");
 
-    dynamic cachedLastFetchedTimeValue =
-    await CacheService.getValue("lastMoviesFetchedTime");
+    dynamic cachedLastFetchedTimeValue = await CacheService.getValue(
+      "lastMoviesFetchedTime",
+    );
     Duration diff = const Duration(minutes: 10);
     print(cachedUid);
     print(cachedLastFetchedTimeValue);
@@ -130,22 +132,30 @@ class _HomeScreenState extends State<HomeScreen>
       Icon(
         Icons.home,
         size: 30,
-        color: index == 0 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 0
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.list,
         size: 30,
-        color: index == 1 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 1
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.graphic_eq_outlined,
         size: 30,
-        color: index == 2 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 2
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
       Icon(
         Icons.person,
         size: 30,
-        color: index == 3 ? Colors.red : const Color.fromRGBO(121, 116, 126, 1.0),
+        color: index == 3
+            ? Colors.red
+            : const Color.fromRGBO(121, 116, 126, 1.0),
       ),
     ];
 
@@ -164,7 +174,10 @@ class _HomeScreenState extends State<HomeScreen>
               children: [
                 // Top section
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15.w,
+                    vertical: 10.h,
+                  ),
                   child: Column(
                     children: [
                       SearchFilterBar(),
@@ -184,20 +197,23 @@ class _HomeScreenState extends State<HomeScreen>
                     children: recommendedMovies.isEmpty
                         ? List.generate(5, (index) => _loadingMovieList())
                         : recommendedMovies.map((movie) {
-                      return _movieList(
-                        'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                        movie.title ?? '',
-                        (movie.genres ?? []).join('/'),
-                        movie.voteAverage?.toStringAsFixed(2) ?? '-',
-                        movie,
-                      );
-                    }).toList(),
+                            return _movieList(
+                              'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                              movie.title ?? '',
+                              (movie.genres ?? []).join('/'),
+                              movie.voteAverage?.toStringAsFixed(2) ?? '-',
+                              movie,
+                            );
+                          }).toList(),
                   ),
                 ),
 
                 // Popular section
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15.w,
+                    vertical: 10.h,
+                  ),
                   child: _content('Popular Right Now'),
                 ),
 
@@ -208,14 +224,14 @@ class _HomeScreenState extends State<HomeScreen>
                     children: popularMovies.isEmpty
                         ? List.generate(5, (index) => _loadingMovieList())
                         : popularMovies.map((movie) {
-                      return _movieList(
-                        'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
-                        movie.title ?? '',
-                        (movie.genres ?? []).join('/'),
-                        movie.voteAverage?.toStringAsFixed(2) ?? '-',
-                        movie,
-                      );
-                    }).toList(),
+                            return _movieList(
+                              'http://image.tmdb.org/t/p/w200/${movie.posterPath}',
+                              movie.title ?? '',
+                              (movie.genres ?? []).join('/'),
+                              movie.voteAverage?.toStringAsFixed(2) ?? '-',
+                              movie,
+                            );
+                          }).toList(),
                   ),
                 ),
 
@@ -285,7 +301,12 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _movieList(
-      String imagePath, String title, String genre, String imdb, Movie movie) {
+    String imagePath,
+    String title,
+    String genre,
+    String imdb,
+    Movie movie,
+  ) {
     return Container(
       margin: EdgeInsets.only(right: 12.w),
       height: 260.h,
@@ -297,8 +318,11 @@ class _HomeScreenState extends State<HomeScreen>
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
-          Navigator.pushNamed(context, RouteName.movieDetailScreen,
-              arguments: movie);
+          Navigator.pushNamed(
+            context,
+            RouteName.movieDetailScreen,
+            arguments: movie,
+          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,7 +332,10 @@ class _HomeScreenState extends State<HomeScreen>
               child: SizedBox(
                 width: double.infinity,
                 height: 180.h,
-                child: Image.network(imagePath, fit: BoxFit.cover),
+                child: imagePath.startsWith("http")
+                    ? Image.network(imagePath, fit: BoxFit.cover)
+                    : Image.asset(imagePath, fit: BoxFit.cover),
+
               ),
             ),
             SizedBox(height: 8.h),
